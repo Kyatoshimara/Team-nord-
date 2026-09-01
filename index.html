@@ -602,11 +602,7 @@ function onCPVChange(sheetKey, clientId){
   var sheet = CPV_DATA[sheetKey];
   var client = sheet.clients.filter(function(c){ return c.id === clientId; })[0];
   if(!client) return;
-  // Une sélection CPV et une surcharge standard ne se combinent pas
-  activeSurcharge = null;
-  document.querySelectorAll(".sbtn").forEach(function(b){ b.classList.remove("on"); });
-  document.getElementById("btn-reset").classList.remove("visible");
-  document.getElementById("surcharge-label").style.display = "none";
+  // CPV et surcharge standard se combinent désormais toujours (peu importe le CPV sélectionné)
 
   activeCPV = {sheet: sheetKey, sheetLabel: sheet.label, clientId: clientId, clientLabel: client.label, items: client.items};
   document.getElementById("cpv-select-"+sheetKey).classList.add("on");
@@ -668,11 +664,7 @@ function toggleSurcharge(cat){
     resetBtn.classList.add("visible");
     label.style.display = "flex";
     document.getElementById("surcharge-label-text").textContent = SURCHARGES[activeSurcharge].label + " appliquée";
-    // Une surcharge standard et un prix négocié CPV ne se combinent pas
-    activeCPV = null;
-    document.querySelectorAll(".cpv-select").forEach(function(s){ s.value = ""; s.classList.remove("on"); });
-    document.getElementById("cpv-reset").classList.remove("visible");
-    document.getElementById("cpv-label").style.display = "none";
+    // CPV et surcharge standard se combinent désormais toujours (peu importe le CPV sélectionné)
   } else {
     resetBtn.classList.remove("visible");
     label.style.display = "none";
@@ -747,16 +739,19 @@ function render(){
 
     var noteH = p.note ? "<div class='note'>ℹ️ "+esc(p.note)+"</div>" : "";
 
+    var cpvBase = cpvPrice;
+    var cpvFinal = (cpvPrice !== null && hasSurcharge) ? cpvPrice*(1+rate) : cpvPrice;
+
     var cpvH = (cpvPrice !== null)
-      ? "<div class='cpv-badge'>🤝 Prix négocié — "+esc(activeCPV.clientLabel)+"</div>"
+      ? "<div class='cpv-badge'>🤝 Prix négocié — "+esc(activeCPV.clientLabel)+(hasSurcharge?" + "+SURCHARGES[activeSurcharge].label:"")+"</div>"
       : "";
 
     var dispPrice = fp !== null ? (hasSurcharge ? fp*(1+rate) : fp) : null;
     var pH;
-    if(cpvPrice !== null){
-      pH = "<div class='pv cpv'>"+cpvPrice.toFixed(2)+" €</div>"
-        +"<div class='pl'>"+esc(activeCPV.clientLabel)+" / "+esc(p.unite)
-        +(fp !== null ? "<br><s style='color:#aaa'>"+fp.toFixed(2)+" €</s>" : "")
+    if(cpvFinal !== null){
+      pH = "<div class='pv cpv'>"+cpvFinal.toFixed(2)+" €</div>"
+        +"<div class='pl'>"+esc(activeCPV.clientLabel)+(hasSurcharge?" + surcharge":"")+" / "+esc(p.unite)
+        +(hasSurcharge ? "<br><s style='color:#aaa'>"+cpvBase.toFixed(2)+" €</s>" : (fp !== null ? "<br><s style='color:#aaa'>"+fp.toFixed(2)+" €</s>" : ""))
         +"</div>";
     } else {
       pH = dispPrice !== null
