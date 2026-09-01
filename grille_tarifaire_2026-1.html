@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grille Tarifaire 2026 — Forbo DRV</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --forbo:#4B88A2;--forbo-dark:#0B2545;--forbo-mid:#2C5F78;
+  --forbo-light:#BFD7EA;--forbo-accent:#F5E6CC;
+  --bg:#F6F9FB;--surface:#fff;--surface2:#EAF1F5;
+  --border:#D7E4EA;--border2:#B8CCD8;
+  --text:#0B2545;--text2:#3D5A70;--text3:#7C97A6;
+  --gold:#B7791F;--gold-light:#F5E6CC;
+  --plat:#7C3AED;--plat-light:#F5F3FF;
+  --r:10px;--rs:6px;
+  --shadow:0 1px 4px rgba(11,37,69,.06),0 4px 16px rgba(11,37,69,.08)
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5}
+header{background:linear-gradient(135deg,var(--forbo-dark) 0%,var(--forbo) 100%);color:#fff;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px;border-bottom:3px solid var(--forbo-accent)}
+.logo-wrap{display:flex;align-items:center;gap:14px}
+.logo-mark{width:38px;height:38px;background:var(--forbo-accent);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:24px;height:24px;fill:var(--forbo-dark)}
+header h1{font-size:17px;font-weight:700;letter-spacing:-.2px;color:#fff}
+header h1 small{display:block;font-size:11px;font-weight:400;opacity:.7;letter-spacing:.3px;text-transform:uppercase}
+.hbadge{background:rgba(245,230,204,.35);border:1px solid rgba(245,230,204,.6);color:var(--forbo-accent);padding:4px 14px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.surcharge-bar{background:var(--forbo);padding:10px 32px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.1)}
+.surcharge-bar > span{font-size:11.5px;color:rgba(255,255,255,.7);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-right:2px;flex-shrink:0}
+.sbtn{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:99px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:13px;line-height:1;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;white-space:nowrap}
+.sbtn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.6)}
+.sbtn.on{border-color:var(--forbo-accent);background:var(--forbo);box-shadow:0 0 0 2px rgba(245,230,204,.5)}
+.sbtn .stag{background:rgba(255,255,255,.2);border-radius:99px;padding:2px 7px;font-size:11px;font-weight:700;line-height:1.3}
+.sbtn-reset{display:flex;align-items:center;padding:7px 14px;border-radius:99px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.75);font-size:12px;line-height:1;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:none;white-space:nowrap}
+.sbtn-reset:hover{color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
+.sbtn-reset.visible{display:flex}
+.cpv-bar{background:var(--forbo-dark);border-bottom:1px solid rgba(255,255,255,.08)}
+.cpv-select{appearance:none;-webkit-appearance:none;flex:1 1 200px;min-width:180px;max-width:230px;padding:7px 32px 7px 16px;border-radius:99px;border:1.5px solid rgba(255,255,255,.3);background:transparent url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right 14px center;color:#fff;font-size:13px;line-height:1;font-weight:600;cursor:pointer;font-family:inherit}
+.cpv-select option{color:#0F172A}
+.cpv-select.on{border-color:var(--forbo-accent);background-color:rgba(245,230,204,.35)}
+.surcharge-active-label{font-size:11.5px;color:var(--forbo-accent);font-weight:600;display:none;align-items:center;gap:5px}
+.cpv-group{flex:1 1 190px;display:flex}
+.cpv-group .cpv-select{width:100%}
+.layout{min-height:calc(100vh - 120px)}
+main{max-width:980px;margin:0 auto;padding:24px;overflow-y:auto}
+.sw{position:relative;margin-bottom:16px}
+.si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);width:18px;height:18px;pointer-events:none}
+#search{width:100%;padding:11px 16px 11px 44px;border:1.5px solid var(--border);border-radius:var(--r);font-size:15px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;box-shadow:var(--shadow)}
+#search:focus{border-color:var(--forbo-mid);box-shadow:0 0 0 3px rgba(44,95,120,.18)}
+#search::placeholder{color:var(--text3)}
+.stats-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px;font-size:13px;color:var(--text2);min-height:30px}
+.stats-row strong{color:var(--text)}
+.strat-toggle{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 22px;border-radius:99px;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font-size:15px;line-height:1;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;width:100%;max-width:280px}
+.strat-toggle:hover{background:var(--gold-light)}
+.strat-toggle.on{background:var(--gold);color:#fff}
+.quick-gammes{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px}
+.qg-btn{padding:11px 22px;border-radius:99px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:15px;line-height:1;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;box-shadow:var(--shadow);white-space:nowrap;width:100%;max-width:280px;text-align:center}
+.qg-btn:hover{border-color:var(--border2);color:var(--text)}
+.qg-btn.on{background:var(--forbo);border-color:var(--forbo);color:#fff;box-shadow:none}
+.bstrat{background:var(--gold);color:#fff}
+#results{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:border-color .15s,box-shadow .15s;box-shadow:var(--shadow)}
+.card:hover{border-color:var(--border2);box-shadow:0 3px 12px rgba(0,61,124,.12)}
+.card.open{border-color:var(--forbo-mid)}
+.ch{display:flex;align-items:center;gap:14px;padding:12px 16px;user-select:none}
+.cm{flex:1;min-width:0}
+.cg{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmeta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center}
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
+.bf{background:var(--forbo-light);color:var(--forbo)}
+.br{background:var(--surface2);color:var(--text2);font-family:monospace;font-weight:400}
+.bu{background:var(--gold-light);color:var(--gold)}
+.bplat{background:var(--plat-light);color:var(--plat)}
+.cp{text-align:right;flex-shrink:0;min-width:90px}
+.pv{font-size:17px;font-weight:700;color:var(--forbo)}
+.pv.surcharge{color:#B5451B}
+.pv.cpv{color:#0D9488}
+.cpv-badge{margin-top:8px;font-size:12px;color:#0D9488;background:#ECFDF9;border:1px solid #A7F0E5;padding:6px 10px;border-radius:var(--rs);display:inline-flex;align-items:center;gap:5px;font-weight:600}
+.pl{font-size:11px;color:var(--text3)}
+.cc{width:18px;height:18px;color:var(--text3);transition:transform .2s;flex-shrink:0}
+.card.open .cc{transform:rotate(180deg);color:var(--forbo-mid)}
+.cd{display:none;border-top:1px solid var(--border);padding:14px 16px 16px;background:var(--surface2)}
+.card.open .cd{display:block}
+.tl{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-weight:700;margin-bottom:10px}
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px}
+.ti{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px}
+.ti.surcharge-on{border-color:rgba(181,69,27,.3);background:#FFF9F5}
+.ti.plat-tier{border-color:rgba(107,33,168,.25);background:var(--plat-light)}
+.tk{font-size:11px;color:var(--text2);margin-bottom:3px}
+.tv{font-size:15px;font-weight:700;color:var(--forbo)}
+.tv.surcharge{color:#B5451B}
+.tv-base{font-size:11px;color:var(--text3);text-decoration:line-through;margin-top:1px}
+.tv.plat{color:var(--plat)}
+.eco{margin-top:8px;font-size:12px;color:var(--text2);padding:6px 10px;background:var(--forbo-light);border-radius:var(--rs);display:inline-flex;align-items:center;gap:5px}
+.note{margin-top:6px;font-size:11.5px;color:var(--text3);font-style:italic}
+.colles-section{margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+.colles-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:#7C3AED;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.colle-list{display:flex;flex-direction:column;gap:5px}
+.colle-item{background:#FBF7FF;border:1px solid #E9D5FF;border-radius:var(--rs);padding:7px 10px;display:flex;flex-direction:column;gap:5px}
+.colle-row{display:flex;align-items:flex-start;gap:8px}
+.colle-ref{font-family:monospace;font-size:10.5px;color:#7C3AED;font-weight:600;white-space:nowrap;flex-shrink:0;min-width:80px}
+.colle-name{font-size:12.5px;font-weight:600;color:var(--text)}
+.colle-type{font-size:11px;color:var(--text3);margin-top:1px}
+.colle-price{font-size:12px;font-weight:700;color:#7C3AED;white-space:nowrap;flex-shrink:0;margin-left:auto;align-self:center}
+.colle-c4c{display:flex;flex-wrap:wrap;gap:5px;padding-left:88px}
+.c4c-chip{font-size:10px;background:#F3E8FF;color:#6D28D9;border-radius:5px;padding:2px 6px;white-space:nowrap}
+.c4c-chip b{font-weight:700}
+#empty{display:none;text-align:center;padding:60px 20px;color:var(--text3)}
+#empty svg{width:48px;height:48px;margin:0 auto 12px;display:block;opacity:.3}
+@media(max-width:720px){header,.surcharge-bar{padding-left:16px;padding-right:16px}main{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-wrap">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M3 3h18v4H3zm0 7h12v4H3zm0 7h18v4H3z"/></svg>
+    </div>
+    <h1>Grille Tarifaire DRV <small>Forbo Flooring Systems — 2026 · v4</small></h1>
+  </div>
+  <div class="hbadge" id="total-badge">— produits</div>
+</header>
+<div class="surcharge-bar">
+  <span>Surcharge&nbsp;:</span>
+  <button class="sbtn" id="btn-pvc" onclick="toggleSurcharge('pvc')">PVC &amp; Sol Souple <span class="stag">+5,5%</span></button>
+  <button class="sbtn" id="btn-marm" onclick="toggleSurcharge('marm')">Marmoleum &amp; Lino <span class="stag">+3%</span></button>
+  <button class="sbtn" id="btn-text" onclick="toggleSurcharge('text')">Textile &amp; Flotex <span class="stag">+3,5%</span></button>
+  <div class="surcharge-active-label" id="surcharge-label">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    <span id="surcharge-label-text"></span>
+  </div>
+  <button class="sbtn-reset" id="btn-reset" onclick="resetSurcharge()">&#10005; Réinitialiser</button>
+</div>
+<div class="surcharge-bar cpv-bar">
+  <span>Prix négociés CPV&nbsp;:</span>
+  <div class="cpv-group" id="cpv-solaset"></div>
+  <div class="cpv-group" id="cpv-centrales"></div>
+  <div class="cpv-group" id="cpv-ent_generales"></div>
+  <div class="cpv-group" id="cpv-hospitality"></div>
+  <div class="cpv-group" id="cpv-commerce_immo"></div>
+  <div class="surcharge-active-label" id="cpv-label">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    <span id="cpv-label-text"></span>
+  </div>
+  <button class="sbtn-reset" id="cpv-reset" onclick="resetCPV()">&#10005; Réinitialiser</button>
+</div>
+<div class="layout">
+  <main>
+    <div class="sw">
+      <svg class="si" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search" placeholder="Rechercher un produit, une référence…" autocomplete="off">
+    </div>
+    <div class="quick-gammes" id="quick-gammes">
+      <button class="strat-toggle" id="strat-toggle" onclick="toggleStrategic()">Produits stratégiques</button>
+    </div>
+    <div class="stats-row"><span id="stat"></span></div>
+    <div id="results"></div>
+    <div id="empty">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803M10.5 7.5v6m3-3h-6"/>
+      </svg>
+      <p>Aucun produit trouvé</p>
+    </div>
+  </main>
+</div>
+<script>
+var DATA = [
+/* ===== MARMOLEUM ===== */
+{"ref":"RP000002","famille":"Marmoleum","gamme":"MARMOLEUM COMPACT 20 200","tarifs":{"OR":10.71,"ARGENT":11.3526,"BRONZE":13.3875,"C4C >500m²":10.3887,"C4C >1000m²":10.1745,"C4C >2000m²":9.9603},"unite":"M2","eco":0.1063},
+{"ref":"RP000004","famille":"Marmoleum","gamme":"MARMOLEUM COMPACT 32 200","tarifs":{"OR":11.83,"ARGENT":12.5398,"BRONZE":14.7875,"C4C >500m²":11.4751,"C4C >1000m²":11.2385,"C4C >2000m²":11.0019},"unite":"M2","eco":0.2048},
+{"ref":"RP000001","famille":"Marmoleum","gamme":"MARMOLEUM COMPACT MARBLED 25 200","tarifs":{"PLATINIUM":12.87,"OR":11.27,"ARGENT":11.9462,"BRONZE":14.0875,"C4C >500m²":10.9319,"C4C >1000m²":10.7065,"C4C >2000m²":10.4811},"unite":"M2","eco":0.1319},
+{"ref":"RP000162","famille":"Marmoleum","gamme":"MARMOLEUM COMPACT SOLID / LINEAR 25 200","tarifs":{"PLATINIUM":13.19,"OR":11.439,"ARGENT":12.1254,"BRONZE":14.2988,"C4C >500m²":11.0959,"C4C >1000m²":10.8671,"C4C >2000m²":10.6383},"unite":"M2","eco":0.1319},
+{"ref":"RP100395","famille":"Marmoleum","gamme":"MARMOLEUM COMPACT COCOA 25 200","tarifs":{"PLATINIUM":13.06,"OR":11.5517,"ARGENT":12.2449,"BRONZE":14.4397,"C4C >500m²":11.2052,"C4C >1000m²":10.9742,"C4C >2000m²":10.7431},"unite":"M2","eco":0.1319},
+{"ref":"RP100371","famille":"Marmoleum","gamme":"MARMOLEUM COMPACT 25 R10 200","tarifs":{"OR":12.397,"ARGENT":13.1408,"BRONZE":15.4963,"C4C >500m²":12.0251,"C4C >1000m²":11.7771,"C4C >2000m²":11.5292},"unite":"M2","eco":0.1319},
+{"ref":"RP000009","famille":"Marmoleum","gamme":"MARMOLEUM DECIBEL 35 200 sur stock","tarifs":{"OR":15.39,"ARGENT":16.3134,"BRONZE":19.2375,"C4C >500m²":14.9283,"C4C >1000m²":14.6205,"C4C >2000m²":14.3127},"unite":"M2","eco":0.1403},
+{"ref":"RP000169","famille":"Marmoleum","gamme":"MARMOLEUM DECIBEL 35 sur fab. spéciale","tarifs":{"OR":16.929,"ARGENT":17.9447,"BRONZE":21.1613,"C4C >500m²":16.4211,"C4C >1000m²":16.0826,"C4C >2000m²":15.744},"unite":"M2","eco":0.1403},
+{"ref":"RP000006","famille":"Marmoleum","gamme":"MARMOLEUM MODULAR 25 Lames & Dalles","tarifs":{"PLATINIUM":19.5,"OR":18.41,"ARGENT":19.5146,"BRONZE":23.0125,"C4C >500m²":17.8577,"C4C >1000m²":17.4895,"C4C >2000m²":17.1213},"unite":"M2","eco":0.1414,"note":">150m² = 17,86 €"},
+{"ref":"RP100001","famille":"Marmoleum","gamme":"MARMOLEUM CLICK Lames & Dalles","tarifs":{"PLATINIUM":32.5,"OR":33.15,"ARGENT":35.139,"BRONZE":41.4375,"C4C >500m²":32.1555,"C4C >1000m²":31.4925,"C4C >2000m²":30.8295},"unite":"M2","eco":0.9612,"note":">150m² = 32,16 €"},
+{"ref":"RP000181","famille":"Marmoleum","gamme":"MARMOLEUM SPORT 32 200","tarifs":{"OR":16.49,"ARGENT":17.4794,"BRONZE":20.6125,"C4C >500m²":15.9953,"C4C >1000m²":15.6655,"C4C >2000m²":15.3357},"unite":"M2","eco":0.1741},
+{"ref":"RP000182","famille":"Marmoleum","gamme":"MARMOLEUM SPORT 40 200","tarifs":{"OR":24.14,"ARGENT":25.5884,"BRONZE":30.175,"C4C >500m²":23.4158,"C4C >1000m²":22.933,"C4C >2000m²":22.4502},"unite":"M2","eco":0.2304},
+{"ref":"RP000011","famille":"Marmoleum","gamme":"MARMOLEUM OHMEX 25 200","tarifs":{"OR":19.107,"ARGENT":20.2534,"BRONZE":23.8838,"C4C >500m²":18.5338,"C4C >1000m²":18.1517,"C4C >2000m²":17.7695},"unite":"M2","eco":0.1552},
+{"ref":"RP000005","famille":"Marmoleum","gamme":"MARMOLEUM COMPACT 40 200","tarifs":{"OR":23.45,"ARGENT":24.857,"BRONZE":29.3125,"C4C >500m²":22.7465,"C4C >1000m²":22.2775,"C4C >2000m²":21.8085},"unite":"M2","eco":0.2304,"note":"Arrêt commercialisation 01.01.2026"},
+{"ref":"RP000010","famille":"Marmoleum","gamme":"MARMOLEUM ACOUSTIC 40 200","tarifs":{"OR":21.26,"ARGENT":22.5356,"BRONZE":26.575,"C4C >500m²":20.6222,"C4C >1000m²":20.197,"C4C >2000m²":19.7718},"unite":"M2","eco":0.2207,"note":"Arrêt commercialisation 01.01.2026"},
+/* ===== FURNITURE LINO ===== */
+{"ref":"RP000012","famille":"Furniture lino","gamme":"BULLETIN BOARD 60 122/183","tarifs":{"PLATINIUM":32.08,"OR":32.4,"ARGENT":32.4,"BRONZE":32.4,"C4C >500m²":31.428,"C4C >1000m²":30.78,"C4C >2000m²":30.132},"unite":"M2","eco":0.4461},
+{"ref":"RP000013","famille":"Furniture lino","gamme":"FURNITURE LINOLEUM 20 183","tarifs":{"PLATINIUM":17.88,"OR":18.05,"ARGENT":18.05,"BRONZE":18.05,"C4C >500m²":17.5085,"C4C >1000m²":17.1475,"C4C >2000m²":16.7865},"unite":"M2","eco":null},
+/* ===== LVT ===== */
+{"ref":"RP000566","famille":"LVT","gamme":"ENDURO 0,30mm","tarifs":{"OR":9.89,"ARGENT":10.4834,"BRONZE":12.3625,"C4C >500m²":9.5933,"C4C >1000m²":9.3955,"C4C >2000m²":9.1977},"unite":"M2","eco":0.3775,"note":">150m² = 9,59 €"},
+{"ref":"RP100086","famille":"LVT","gamme":"ALLURA 0.40mm","tarifs":{"OR":10.72,"ARGENT":11.3632,"BRONZE":13.4,"C4C >500m²":10.3984,"C4C >1000m²":10.184,"C4C >2000m²":9.9696},"unite":"M2","eco":0.2709,"note":">150m² = 10,40 €"},
+{"ref":"RP000639","famille":"LVT","gamme":"ALLURA 0.55mm U3","tarifs":{"OR":14.71,"ARGENT":15.5926,"BRONZE":18.3875,"C4C >500m²":14.2687,"C4C >1000m²":13.9745,"C4C >2000m²":13.6803},"unite":"M2","eco":0.2709,"note":">150m² = 14,27 €"},
+{"ref":"RP000026","famille":"LVT","gamme":"ALLURA 0.70mm U4","tarifs":{"OR":15.86,"ARGENT":16.8116,"BRONZE":19.825,"C4C >500m²":15.3842,"C4C >1000m²":15.067,"C4C >2000m²":14.7498},"unite":"M2","eco":0.3096,"note":">150m² = 15,38 €"},
+{"ref":"RP000583","famille":"LVT","gamme":"ALLURA DECIBEL 0,35mm","tarifs":{"PLATINIUM":13.635,"OR":11.99,"ARGENT":12.7094,"BRONZE":14.9875,"C4C >500m²":11.6303,"C4C >1000m²":11.3905,"C4C >2000m²":11.1507},"unite":"M2","eco":0.1949,"note":">150m² = 11,63 €  |  >200m² éligible"},
+{"ref":"RP100399","famille":"LVT","gamme":"ALLURA DECIBEL B+ 0,35mm","tarifs":{"PLATINIUM":17.0438,"OR":14.9875,"ARGENT":15.8868,"BRONZE":18.7344,"C4C >500m²":14.5379,"C4C >1000m²":14.2381,"C4C >2000m²":13.9384},"unite":"M2","eco":0.1949},
+{"ref":"RP000588","famille":"LVT","gamme":"ALLURA DECIBEL 0,7mm U3","tarifs":{"PLATINIUM":22.5,"OR":19.33,"ARGENT":20.4898,"BRONZE":24.1625,"C4C >500m²":18.7501,"C4C >1000m²":18.3635,"C4C >2000m²":17.9769},"unite":"M2","eco":0.2838,"note":">150m² = 18,75 €  |  >200m² éligible"},
+{"ref":"RP100400","famille":"LVT","gamme":"ALLURA DECIBEL B+ 0,7mm U3","tarifs":{"PLATINIUM":28.125,"OR":24.1625,"ARGENT":25.6123,"BRONZE":30.2031,"C4C >500m²":23.4376,"C4C >1000m²":22.9544,"C4C >2000m²":22.4711},"unite":"M2","eco":0.2838},
+{"ref":"RP000621","famille":"LVT","gamme":"ALLURA DECIBEL 0,8mm U4","tarifs":{"PLATINIUM":25.5,"OR":21.37,"ARGENT":22.6522,"BRONZE":26.7125,"C4C >500m²":20.7289,"C4C >1000m²":20.3015,"C4C >2000m²":19.8741},"unite":"M2","eco":0.2838,"note":">150m² = 20,73 €  |  >200m² éligible"},
+{"ref":"RP100401","famille":"LVT","gamme":"ALLURA DECIBEL B+ 0,8mm U4","tarifs":{"PLATINIUM":31.875,"OR":26.7125,"ARGENT":28.3153,"BRONZE":33.3906,"C4C >500m²":25.9111,"C4C >1000m²":25.3769,"C4C >2000m²":24.8426},"unite":"M2","eco":0.2838},
+{"ref":"RP000576","famille":"LVT","gamme":"ALLURA FLEX 0.55mm","tarifs":{"PLATINIUM":25.9,"OR":22.34,"ARGENT":23.6804,"BRONZE":27.925,"C4C >500m²":21.6698,"C4C >1000m²":21.223,"C4C >2000m²":20.7762},"unite":"M2","eco":0.4463,"note":">150m² = 21,67 €  |  >200m² éligible"},
+{"ref":"RP000565","famille":"LVT","gamme":"ALLURA FLEX 1.00mm","tarifs":{"PLATINIUM":29.5,"OR":25.4,"ARGENT":26.924,"BRONZE":31.75,"C4C >500m²":24.638,"C4C >1000m²":24.13,"C4C >2000m²":23.622},"unite":"M2","eco":0.575,"note":">150m² = 24,64 €  |  >200m² éligible"},
+{"ref":"RP100341","famille":"LVT","gamme":"ENDURO CLICK DECIBEL 0,55mm","tarifs":{"PLATINIUM":22.1,"OR":18.21,"ARGENT":19.3026,"BRONZE":22.7625,"C4C >500m²":17.6637,"C4C >1000m²":17.2995,"C4C >2000m²":16.9353},"unite":"M2","eco":0.5495,"note":">150m² = 17,66 €"},
+{"ref":"RP100108","famille":"LVT","gamme":"ALLURA CLICK LIFE 0,45mm","tarifs":{"OR":20.4,"ARGENT":21.624,"BRONZE":25.5,"C4C >500m²":19.788,"C4C >1000m²":19.38,"C4C >2000m²":18.972},"unite":"M2","eco":0.606,"note":">150m² = 19,79 €"},
+{"ref":"RP000558","famille":"LVT","gamme":"ALLURA CLICK PRO 0,55mm","tarifs":{"PLATINIUM":25.16,"OR":23.97,"ARGENT":25.4082,"BRONZE":29.9625,"C4C >500m²":23.2509,"C4C >1000m²":22.7715,"C4C >2000m²":22.2921},"unite":"M2","eco":0.606,"note":">150m² = 23,25 €"},
+{"ref":"RP000671","famille":"LVT","gamme":"ALLURA PUZZLE 0,7mm (100x100cm)","tarifs":{"OR":32.13,"ARGENT":34.0578,"BRONZE":40.1625,"C4C >500m²":31.1661,"C4C >1000m²":30.5235,"C4C >2000m²":29.8809},"unite":"M2","eco":0.5775,"note":">150m² = 31,17 €  |  >200m² éligible"},
+{"ref":"RP100396","famille":"LVT","gamme":"ALLURA PUZZLE Small 0,7mm (63x63cm)","tarifs":{"OR":28.917,"ARGENT":30.652,"BRONZE":36.1463,"C4C >500m²":28.0495,"C4C >1000m²":27.4712,"C4C >2000m²":26.8928},"unite":"M2","eco":null,"note":">150m² = 28,05 € — Lancement sept. 2026"},
+/* ===== U2S ===== */
+{"ref":"RP1000097","famille":"U2S","gamme":"SARLON HABITAT 2S3 200","tarifs":{"OR":7.04,"ARGENT":7.4624,"BRONZE":8.8,"C4C >500m²":6.8288,"C4C >1000m²":6.688,"C4C >2000m²":6.5472},"unite":"M2","eco":0.1617},
+{"ref":"RP1000097","famille":"U2S","gamme":"SARLON HABITAT SEMI LIBRE 2S3 200","tarifs":{"OR":7.04,"ARGENT":7.4624,"BRONZE":8.8,"C4C >500m²":6.8288,"C4C >1000m²":6.688,"C4C >2000m²":6.5472},"unite":"M2","eco":0.13},
+{"ref":"RP000121","famille":"U2S","gamme":"HABITAT MODAL 2S3 Lames & Dalles","tarifs":{"C4C >500m²":8.5,"C4C >1000m²":8.0},"unite":"M2","eco":0.2193,"note":"Déstockage"},
+/* ===== U3/U4 acoust. ===== */
+{"ref":"RP000500","famille":"U3/U4 acoust.","gamme":"SARLON PRIMEO / PRIMEO COMPACT 33 200","tarifs":{"OR":12.21,"ARGENT":12.9426,"BRONZE":15.2625,"C4C >500m²":11.8437,"C4C >1000m²":11.5995,"C4C >2000m²":11.3553},"unite":"M2","eco":0.2263,"note":">200m² éligible"},
+{"ref":"RP000501","famille":"U3/U4 acoust.","gamme":"SARLON PRIMEO / PRIMEO COMPACT 43 200","tarifs":{"OR":13.431,"ARGENT":14.2369,"BRONZE":16.7888,"C4C >500m²":13.0281,"C4C >1000m²":12.7595,"C4C >2000m²":12.4908},"unite":"M2","eco":0.2263,"note":">200m² éligible"},
+{"ref":"RP000040","famille":"U3/U4 acoust.","gamme":"SARLON TRAFIC 33 15/19 dB 200","tarifs":{"OR":14.4078,"ARGENT":15.2723,"BRONZE":18.0098,"C4C >500m²":13.9756,"C4C >1000m²":13.6874,"C4C >2000m²":13.3993},"unite":"M2","eco":0.2263,"note":">200m² éligible"},
+{"ref":"RP000042","famille":"U3/U4 acoust.","gamme":"SARLON TRAFIC 43 15/19 dB 200","tarifs":{"OR":16.1172,"ARGENT":17.0842,"BRONZE":20.1465,"C4C >500m²":15.6337,"C4C >1000m²":15.3113,"C4C >2000m²":14.989},"unite":"M2","eco":0.2263,"note":">200m² éligible"},
+{"ref":"RP100308","famille":"U3/U4 acoust.","gamme":"SARLON TRAFIC DESIGNERS 15/19 dB 43 200","tarifs":{"OR":18.5348,"ARGENT":19.6469,"BRONZE":23.1685,"C4C >500m²":17.9787,"C4C >1000m²":17.608,"C4C >2000m²":17.2373},"unite":"M2","eco":0.2379},
+{"ref":"RP000048","famille":"U3/U4 acoust.","gamme":"SARLON MARCHE COMPLETE 102","tarifs":{"OR":23.21,"ARGENT":23.21,"BRONZE":23.21,"C4C >500m²":22.5137,"C4C >1000m²":22.0495,"C4C >2000m²":21.5853},"unite":"M2","eco":0.2545,"note":">75m² éligible"},
+{"ref":"RP000227","famille":"U3/U4 acoust.","gamme":"PRIMEO MODAL 33 Lames & Dalles","tarifs":{"C4C >500m²":14.4,"C4C >1000m²":14.0},"unite":"M2","eco":0.3336,"note":"Déstockage"},
+{"ref":"RP000271","famille":"U3/U4 acoust.","gamme":"PRIMEO MODAL 43 Lames & Dalles","tarifs":{"C4C >500m²":16.2,"C4C >1000m²":15.8},"unite":"M2","eco":0.3336,"note":"Déstockage"},
+/* ===== COMPACT LÉS ===== */
+{"ref":"RP000646","famille":"Compact Lés","gamme":"ETERNAL 33 200","tarifs":{"OR":14.4078,"ARGENT":15.2723,"BRONZE":18.0098,"C4C >500m²":13.9756,"C4C >1000m²":13.6874,"C4C >2000m²":13.3993},"unite":"M2","eco":0.2321,"note":">200m² éligible"},
+{"ref":"RP000028","famille":"Compact Lés","gamme":"ETERNAL 43 200","tarifs":{"OR":16.1172,"ARGENT":17.0842,"BRONZE":20.1465,"C4C >500m²":15.6337,"C4C >1000m²":15.3113,"C4C >2000m²":14.989},"unite":"M2","eco":0.2321,"note":">200m² éligible"},
+{"ref":"RP000143","famille":"Compact Lés","gamme":"ETERNAL NEXT 43 200","tarifs":{"OR":17.1172,"ARGENT":18.1442,"BRONZE":21.3965,"C4C >500m²":16.6037,"C4C >1000m²":16.2613,"C4C >2000m²":15.919},"unite":"M2","eco":0.1901,"note":">200m² éligible"},
+{"ref":"RP100309","famille":"Compact Lés","gamme":"ETERNAL DESIGNERS 43 200","tarifs":{"OR":18.5348,"ARGENT":19.6469,"BRONZE":23.1685,"C4C >500m²":17.9787,"C4C >1000m²":17.608,"C4C >2000m²":17.2373},"unite":"M2","eco":0.2309},
+{"ref":"RP000144","famille":"Compact Lés","gamme":"ETERNAL LAB 43 200","tarifs":{"OR":22.5641,"ARGENT":23.9179,"BRONZE":28.2051,"C4C >500m²":21.8872,"C4C >1000m²":21.4359,"C4C >2000m²":20.9846},"unite":"M2","eco":0.2311},
+{"ref":"RP000136","famille":"Compact Lés","gamme":"ONYX + 200","tarifs":{"OR":11.5,"ARGENT":11.5,"BRONZE":11.5,"C4C >500m²":11.155,"C4C >1000m²":10.925,"C4C >2000m²":10.695},"unite":"M2","eco":0.1625,"note":">200m² éligible"},
+{"ref":"RP000016","famille":"Compact Lés","gamme":"SURESTEP R10 & SAFESTEP AQUA 200","tarifs":{"OR":22.17,"ARGENT":22.17,"BRONZE":22.17,"C4C >500m²":21.5049,"C4C >1000m²":21.0615,"C4C >2000m²":20.6181},"unite":"M2","eco":0.2365,"note":">75m² éligible"},
+{"ref":"RP000017","famille":"Compact Lés","gamme":"SAFESTEP R11 200","tarifs":{"OR":24.387,"ARGENT":25.8502,"BRONZE":30.4838,"C4C >500m²":23.6554,"C4C >1000m²":23.1677,"C4C >2000m²":22.6799},"unite":"M2","eco":0.2344},
+{"ref":"RP000018","famille":"Compact Lés","gamme":"SAFESTEP R12 200","tarifs":{"OR":26.604,"ARGENT":28.2002,"BRONZE":33.255,"C4C >500m²":25.8059,"C4C >1000m²":25.2738,"C4C >2000m²":24.7417},"unite":"M2","eco":0.2344},
+/* ===== MODUL'UP ===== */
+{"ref":"RP000063","famille":"Modul'up","gamme":"MODUL'UP HABITAT 2S3 200","tarifs":{"PLATINIUM":10.27,"OR":9.856,"ARGENT":10.4474,"BRONZE":12.32,"C4C >500m²":9.5603,"C4C >1000m²":9.3632,"C4C >2000m²":9.1661},"unite":"M2","eco":0.1400},
+{"ref":"RP100313","famille":"Modul'up","gamme":"MODUL'UP COMPACT HABITAT 200","tarifs":{"PLATINIUM":13.97,"OR":12.21,"ARGENT":12.9426,"BRONZE":15.2625,"C4C >500m²":11.8437,"C4C >1000m²":11.5995,"C4C >2000m²":11.3553},"unite":"M2","eco":0.1707},
+{"ref":"RP000150","famille":"Modul'up","gamme":"MODUL'UP TRAFIC 33 200","tarifs":{"PLATINIUM":20.53,"OR":17.2894,"ARGENT":18.3267,"BRONZE":21.6117,"C4C >500m²":16.7707,"C4C >1000m²":16.4249,"C4C >2000m²":16.0791},"unite":"M2","eco":0.1932,"note":">200m² éligible"},
+{"ref":"RP000151","famille":"Modul'up","gamme":"MODUL'UP TRAFIC 43 200","tarifs":{"PLATINIUM":22.34,"OR":19.3406,"ARGENT":20.5011,"BRONZE":24.1758,"C4C >500m²":18.7604,"C4C >1000m²":18.3736,"C4C >2000m²":17.9868},"unite":"M2","eco":0.1932,"note":">200m² éligible"},
+{"ref":"RP100306","famille":"Modul'up","gamme":"MODUL'UP TRAFIC DESIGNERS 43 200","tarifs":{"OR":22.2417,"ARGENT":23.5762,"BRONZE":27.8022,"C4C >500m²":21.5745,"C4C >1000m²":21.1296,"C4C >2000m²":20.6848},"unite":"M2","eco":0.1932},
+{"ref":"RP000715","famille":"Modul'up","gamme":"MODUL'UP COMPACT 33 200","tarifs":{"PLATINIUM":20.02,"OR":17.2894,"ARGENT":18.3267,"BRONZE":21.6117,"C4C >500m²":16.7707,"C4C >1000m²":16.4249,"C4C >2000m²":16.0791},"unite":"M2","eco":0.1775,"note":">200m² éligible"},
+{"ref":"RP000716","famille":"Modul'up","gamme":"MODUL'UP COMPACT 43 200","tarifs":{"PLATINIUM":22.37,"OR":19.3406,"ARGENT":20.5011,"BRONZE":24.1758,"C4C >500m²":18.7604,"C4C >1000m²":18.3736,"C4C >2000m²":17.9868},"unite":"M2","eco":0.1775,"note":">200m² éligible"},
+{"ref":"RP100019","famille":"Modul'up","gamme":"MODUL'UP COMPACT TE 33 200","tarifs":{"OR":23.35,"ARGENT":24.751,"BRONZE":29.1875,"C4C >500m²":22.6495,"C4C >1000m²":22.1825,"C4C >2000m²":21.7155},"unite":"M2","eco":0.1836,"note":">200m² éligible"},
+{"ref":"RP100020","famille":"Modul'up","gamme":"MODUL'UP COMPACT TE 43 200","tarifs":{"OR":26.1,"ARGENT":27.666,"BRONZE":32.625,"C4C >500m²":25.317,"C4C >1000m²":24.795,"C4C >2000m²":24.273},"unite":"M2","eco":0.1836,"note":">200m² éligible"},
+/* ===== HOMOGÈNES ===== */
+{"ref":"RP100155","famille":"Homogènes","gamme":"SPHERA ESSENCE 200","tarifs":{"OR":12.177,"ARGENT":12.9076,"BRONZE":15.2213,"C4C >500m²":11.8117,"C4C >1000m²":11.5681,"C4C >2000m²":11.3246},"unite":"M2","eco":0.2653,"note":">200m² éligible"},
+{"ref":"RP000156","famille":"Homogènes","gamme":"SPHERA ELEMENT 200","tarifs":{"OR":13.53,"ARGENT":14.3418,"BRONZE":16.9125,"C4C >500m²":13.1241,"C4C >1000m²":12.8535,"C4C >2000m²":12.5829},"unite":"M2","eco":0.2487,"note":">200m² éligible"},
+{"ref":"RP000157","famille":"Homogènes","gamme":"SPHERA ENERGETIC 200","tarifs":{"OR":14.883,"ARGENT":15.776,"BRONZE":18.6038,"C4C >500m²":14.4365,"C4C >1000m²":14.1389,"C4C >2000m²":13.8412},"unite":"M2","eco":0.2487,"note":">200m² éligible"},
+{"ref":"RP100305","famille":"Homogènes","gamme":"SPHERA ELITE B+ 200","tarifs":{"OR":16.9125,"ARGENT":17.9273,"BRONZE":21.1406,"C4C >500m²":16.4051,"C4C >1000m²":16.0669,"C4C >2000m²":15.7286},"unite":"M2","eco":0.3121,"note":">200m² éligible"},
+{"ref":"RP100200","famille":"Homogènes","gamme":"SPHERA SD 200","tarifs":{"OR":21.23,"ARGENT":22.5038,"BRONZE":26.5375,"C4C >500m²":20.5931,"C4C >1000m²":20.1685,"C4C >2000m²":19.7439},"unite":"M2","eco":0.2487},
+{"ref":"RP100201","famille":"Homogènes","gamme":"SPHERA EC 200","tarifs":{"OR":24.4145,"ARGENT":25.8794,"BRONZE":30.5181,"C4C >500m²":23.6821,"C4C >1000m²":23.1938,"C4C >2000m²":22.7055},"unite":"M2","eco":0.2487},
+{"ref":"RP000021","famille":"Homogènes","gamme":"COLOREX SD (61.5x61.5 - 5.29m²)","tarifs":{"OR":25.69,"ARGENT":27.2314,"BRONZE":32.1125,"C4C >500m²":24.9193,"C4C >1000m²":24.4055,"C4C >2000m²":23.8917},"unite":"M2","eco":0.2303},
+{"ref":"RP000022","famille":"Homogènes","gamme":"COLOREX EC (61.5x61.5 - 5.29m²)","tarifs":{"OR":29.5435,"ARGENT":31.3161,"BRONZE":36.9294,"C4C >500m²":28.6572,"C4C >1000m²":28.0663,"C4C >2000m²":27.4755},"unite":"M2","eco":0.2303},
+{"ref":"RP000052","famille":"Homogènes","gamme":"COLOREX PLUS BASIC (60.7x60.7 - 1.84m²)","tarifs":{"OR":61.15,"ARGENT":64.819,"BRONZE":76.4375,"C4C >500m²":59.3155,"C4C >1000m²":58.0925,"C4C >2000m²":56.8695},"unite":"M2","eco":0.8918},
+{"ref":"RP000020","famille":"Homogènes","gamme":"COLOREX PLUS R10 (60.7x60.7 - 1.84m²)","tarifs":{"OR":67.265,"ARGENT":71.3009,"BRONZE":84.0813,"C4C >500m²":65.2471,"C4C >1000m²":63.9018,"C4C >2000m²":62.5565},"unite":"M2","eco":0.9064},
+{"ref":"RP000024","famille":"Homogènes","gamme":"COLOREX PLUS EC (60.7x60.7 - 1.84m²)","tarifs":{"OR":73.38,"ARGENT":77.7828,"BRONZE":91.725,"C4C >500m²":71.1786,"C4C >1000m²":69.711,"C4C >2000m²":68.2434},"unite":"M2","eco":0.8918},
+/* ===== RÉSIDENTIEL ===== */
+{"ref":"RP100085","famille":"Résidentiel","gamme":"NOVILON PRIMA 400/300/200","tarifs":{"OR":7.16,"ARGENT":7.5896,"BRONZE":8.95,"C4C >500m²":6.9452,"C4C >1000m²":6.802,"C4C >2000m²":6.6588},"unite":"M2","eco":0.1560},
+{"ref":"RP100009","famille":"Résidentiel","gamme":"NOVILON VIVA 400/300/200","tarifs":{"OR":8.96,"ARGENT":9.4976,"BRONZE":11.2,"C4C >500m²":8.6912,"C4C >1000m²":8.512,"C4C >2000m²":8.3328},"unite":"M2","eco":0.2179},
+/* ===== PRODUITS BLANCS ===== */
+{"ref":"RP000077","famille":"Produits blancs","gamme":"VINYLE PRO 33 200 (Pdt blanc)","tarifs":{"OR":11.91,"ARGENT":12.6246,"BRONZE":14.8875,"C4C >500m²":11.5527,"C4C >1000m²":11.3145,"C4C >2000m²":11.0763},"unite":"M2","eco":0.2197},
+{"ref":"RP000078","famille":"Produits blancs","gamme":"VINYLE PRO 43 200 (Pdt blanc)","tarifs":{"OR":13.22,"ARGENT":14.0132,"BRONZE":16.525,"C4C >500m²":12.8234,"C4C >1000m²":12.559,"C4C >2000m²":12.2946},"unite":"M2","eco":0.2263},
+{"ref":"RP000602","famille":"Produits blancs","gamme":"VINYLE PRO COMPACT 19dB 43 200 (Pdt blanc)","tarifs":{"OR":11.91,"ARGENT":12.6246,"BRONZE":14.8875,"C4C >500m²":11.5527,"C4C >1000m²":11.3145,"C4C >2000m²":11.0763},"unite":"M2","eco":0.2056},
+{"ref":"RP000601","famille":"Produits blancs","gamme":"VINYLE PRO COMPACT 33 200 (Pdt blanc)","tarifs":{"OR":13.22,"ARGENT":14.0132,"BRONZE":16.525,"C4C >500m²":12.8234,"C4C >1000m²":12.559,"C4C >2000m²":12.2946},"unite":"M2","eco":0.2197},
+{"ref":"RP000603","famille":"Produits blancs","gamme":"VINYLE PRO DALLES 33 50x50 (Pdt blanc)","tarifs":{"OR":15.04,"ARGENT":15.9424,"BRONZE":18.8,"C4C >500m²":14.5888,"C4C >1000m²":14.288,"C4C >2000m²":13.9872},"unite":"M2","eco":0.2969},
+{"ref":"RP000604","famille":"Produits blancs","gamme":"VINYLE PRO DALLES 43 (Pdt blanc)","tarifs":{"OR":16.35,"ARGENT":17.331,"BRONZE":20.4375,"C4C >500m²":15.8595,"C4C >1000m²":15.5325,"C4C >2000m²":15.2055},"unite":"M2","eco":0.2969},
+{"ref":"RP100311","famille":"Produits blancs","gamme":"VINYLUX COMPACT 33 200 (Pdt blanc)","tarifs":{"OR":11.46,"ARGENT":12.1476,"BRONZE":14.325,"C4C >500m²":11.1162,"C4C >1000m²":10.887,"C4C >2000m²":10.6578},"unite":"M2","eco":0.2279,"note":"Arrêt 01.02.2026"},
+{"ref":"RP000735","famille":"Produits blancs","gamme":"VINYLUX COMPACT 43 200 (Pdt blanc)","tarifs":{"OR":12.52,"ARGENT":13.2712,"BRONZE":15.65,"C4C >500m²":12.1444,"C4C >1000m²":11.894,"C4C >2000m²":11.6436},"unite":"M2","eco":0.2290,"note":"Arrêt 01.02.2026"},
+{"ref":"RP000736","famille":"Produits blancs","gamme":"VINYLUX CONFORT 33 200/400 (Pdt blanc)","tarifs":{"OR":11.46,"ARGENT":12.1476,"BRONZE":14.325,"C4C >500m²":11.1162,"C4C >1000m²":10.887,"C4C >2000m²":10.6578},"unite":"M2","eco":0.2235,"note":"Arrêt 01.02.2026"},
+{"ref":"RP000737","famille":"Produits blancs","gamme":"VINYLUX CONFORT 43 200/400 (Pdt blanc)","tarifs":{"OR":12.52,"ARGENT":13.2712,"BRONZE":15.65,"C4C >500m²":12.1444,"C4C >1000m²":11.894,"C4C >2000m²":11.6436},"unite":"M2","eco":0.2235,"note":"Arrêt 01.02.2026"},
+/* ===== AIGUILLETÉS ===== */
+{"ref":"RP000065","famille":"Aiguilletés","gamme":"SHOWTIME COLOUR 200","tarifs":{"OR":10.112,"ARGENT":10.7187,"BRONZE":12.64,"C4C >500m²":9.8086,"C4C >1000m²":9.6064,"C4C >2000m²":9.4042},"unite":"M2","eco":0.0848},
+{"ref":"RP000068","famille":"Aiguilletés","gamme":"SHOWTIME GRAPHIC 200","tarifs":{"OR":11.376,"ARGENT":12.0586,"BRONZE":14.22,"C4C >500m²":11.0347,"C4C >1000m²":10.8072,"C4C >2000m²":10.5797},"unite":"M2","eco":0.0848},
+{"ref":"RP000066","famille":"Aiguilletés","gamme":"MARKANT 200","tarifs":{"OR":12.64,"ARGENT":13.3984,"BRONZE":15.8,"C4C >500m²":12.2608,"C4C >1000m²":12.008,"C4C >2000m²":11.7552},"unite":"M2","eco":0.0885},
+{"ref":"RP000067","famille":"Aiguilletés","gamme":"FORTE 200","tarifs":{"OR":16.432,"ARGENT":17.4179,"BRONZE":20.54,"C4C >500m²":15.939,"C4C >1000m²":15.6104,"C4C >2000m²":15.2818},"unite":"M2","eco":0.1301},
+{"ref":"RP000315","famille":"Aiguilletés","gamme":"FORTE TILES (50x50 - 4m²)","tarifs":{"OR":17.696,"ARGENT":18.7578,"BRONZE":22.12,"C4C >500m²":17.1651,"C4C >1000m²":16.8112,"C4C >2000m²":16.4573},"unite":"M2","eco":0.0947},
+/* ===== FLOTEX ===== */
+{"ref":"RP000509","famille":"Flotex","gamme":"FLOTEX COLOUR 200","tarifs":{"OR":31.28,"ARGENT":33.1568,"BRONZE":39.1,"C4C >500m²":30.3416,"C4C >1000m²":29.716,"C4C >2000m²":29.0904},"unite":"M2","eco":0.1609,"note":">200m² éligible"},
+{"ref":"RP100342","famille":"Flotex","gamme":"FLOTEX ADVANCE 200","tarifs":{"OR":32.28,"ARGENT":34.2168,"BRONZE":40.35,"C4C >500m²":31.3116,"C4C >1000m²":30.666,"C4C >2000m²":30.0204},"unite":"M2","eco":0.1586,"note":">200m² éligible"},
+{"ref":"RP000510","famille":"Flotex","gamme":"FLOTEX VISION / H&L 200","tarifs":{"OR":34.408,"ARGENT":36.4725,"BRONZE":43.01,"C4C >500m²":33.3758,"C4C >1000m²":32.6876,"C4C >2000m²":31.9994},"unite":"M2","eco":0.1609,"note":">200m² éligible"},
+{"ref":"RP000673","famille":"Flotex","gamme":"FLOTEX DESIGNERS 200","tarifs":{"OR":34.408,"ARGENT":36.4725,"BRONZE":43.01,"C4C >500m²":33.3758,"C4C >1000m²":32.6876,"C4C >2000m²":31.9994},"unite":"M2","eco":0.1609,"note":">200m² éligible"},
+{"ref":"RP000513","famille":"Flotex","gamme":"FLOTEX Dalles","tarifs":{"PLATINIUM":39.55,"OR":37.55,"ARGENT":39.803,"BRONZE":46.9375,"C4C >500m²":36.4235,"C4C >1000m²":35.6725,"C4C >2000m²":34.9215},"unite":"M2","eco":0.3507,"note":">150m² = 36,42 €  |  >200m² éligible"},
+{"ref":"RP000581","famille":"Flotex","gamme":"FLOTEX Lames","tarifs":{"PLATINIUM":40.68,"OR":38.62,"ARGENT":40.9372,"BRONZE":48.275,"C4C >500m²":37.4614,"C4C >1000m²":36.689,"C4C >2000m²":35.9166},"unite":"M2","eco":0.3507,"note":">150m² = 37,46 €  |  >200m² éligible"},
+{"ref":"RP000802","famille":"Flotex","gamme":"FLOTEX COLOR (recoloration) ou LOGO","tarifs":{"OR":34.408,"ARGENT":36.4725,"BRONZE":43.01,"C4C >500m²":33.3758,"C4C >1000m²":32.6876,"C4C >2000m²":31.9994},"unite":"M2","eco":0.1609,"note":">200m² éligible"},
+{"ref":"RP000801","famille":"Flotex","gamme":"FLOTEX CREA ou PANORAMIQUE","tarifs":{"OR":43.792,"ARGENT":46.4195,"BRONZE":54.74,"C4C >500m²":42.4782,"C4C >1000m²":41.6024,"C4C >2000m²":40.7266},"unite":"M2","eco":0.1613,"note":">200m² éligible"},
+{"ref":"RP000019","famille":"Flotex","gamme":"FLOTEX ACOUSTIC+ Lames&Dalles (Fab.spé)","tarifs":{"OR":41.2335,"ARGENT":43.7075,"BRONZE":51.5419,"C4C >500m²":39.9965,"C4C >1000m²":39.1718,"C4C >2000m²":38.3472},"unite":"M2","eco":0.1014,"note":"Arrêt collection 31.12.2024"},
+/* ===== FLOTEX NEXT ===== */
+{"ref":"RP100336","famille":"Flotex Next","gamme":"FLOTEX VISION NEXT / H&L 200","tarifs":{"OR":35.408,"ARGENT":37.5325,"BRONZE":44.26,"C4C >500m²":34.3458,"C4C >1000m²":33.6376,"C4C >2000m²":32.9294},"unite":"M2","eco":0.1585,"note":">200m² éligible"},
+{"ref":"RP100337","famille":"Flotex Next","gamme":"FLOTEX DESIGNERS NEXT 200","tarifs":{"OR":35.408,"ARGENT":37.5325,"BRONZE":44.26,"C4C >500m²":34.3458,"C4C >1000m²":33.6376,"C4C >2000m²":32.9294},"unite":"M2","eco":0.1585,"note":">200m² éligible"},
+{"ref":"RP100379","famille":"Flotex Next","gamme":"FLOTEX COLOR ou LOGO NEXT","tarifs":{"OR":35.408,"ARGENT":37.4725,"BRONZE":44.01,"C4C >500m²":34.3458,"C4C >1000m²":33.6376,"C4C >2000m²":32.9294},"unite":"M2","eco":0.1585,"note":">200m² éligible"},
+{"ref":"RP100378","famille":"Flotex Next","gamme":"FLOTEX CREA ou PANORAMIQUE NEXT","tarifs":{"OR":44.792,"ARGENT":47.4195,"BRONZE":55.74,"C4C >500m²":43.4482,"C4C >1000m²":42.5524,"C4C >2000m²":41.6566},"unite":"M2","eco":0.1585,"note":">200m² éligible"},
+/* ===== TESSERA ===== */
+{"ref":"RP000514","famille":"Tessera","gamme":"TESSERA BASIS PRO/PHASE Lames & Dalles","tarifs":{"OR":11.584,"ARGENT":12.279,"BRONZE":14.48,"C4C >500m²":11.2365,"C4C >1000m²":11.0048,"C4C >2000m²":10.7731},"unite":"M2","eco":0.2704,"note":">150m² = 11,24 €"},
+{"ref":"RP000515","famille":"Tessera","gamme":"TESSERA LAYOUT & OUTLINE Dalles (5m²)","tarifs":{"OR":12.5976,"ARGENT":13.3535,"BRONZE":15.747,"C4C >500m²":12.2197,"C4C >1000m²":11.9677,"C4C >2000m²":11.7158},"unite":"M2","eco":0.2732,"note":">150m² = 12,22 €"},
+{"ref":"RP000041","famille":"Tessera","gamme":"TESSERA LAYOUT & OUTLINE Lames (4.5m²)","tarifs":{"OR":14.9144,"ARGENT":15.8093,"BRONZE":18.643,"C4C >500m²":14.467,"C4C >1000m²":14.1687,"C4C >2000m²":13.8704},"unite":"M2","eco":0.2732,"note":">150m² = 14,47 € — Arrêt 07.04.2026"},
+{"ref":"RP000007","famille":"Tessera","gamme":"TESSERA CREATE SPACE 1 (50x50 - 5m²)","tarifs":{"OR":14.48,"ARGENT":15.3488,"BRONZE":18.1,"C4C >500m²":14.0456,"C4C >1000m²":13.756,"C4C >2000m²":13.4664},"unite":"M2","eco":0.2711},
+{"ref":"RP100348","famille":"Tessera","gamme":"TESSERA TOPOLOGY (50x50 - 4m²)","tarifs":{"OR":16.652,"ARGENT":17.6511,"BRONZE":20.815,"C4C >500m²":16.1524,"C4C >1000m²":15.8194,"C4C >2000m²":15.4864},"unite":"M2","eco":0.2963},
+{"ref":"RP100369","famille":"Tessera","gamme":"TESSERA TWINE (50x50 - 4m²)","tarifs":{"OR":16.652,"ARGENT":17.6511,"BRONZE":20.815,"C4C >500m²":16.1524,"C4C >1000m²":15.8194,"C4C >2000m²":15.4864},"unite":"M2","eco":0.2974},
+{"ref":"RP100391","famille":"Tessera","gamme":"TESSERA TRANQUILLITY (50x50 - 4m²)","tarifs":{"OR":16.652,"ARGENT":17.6511,"BRONZE":20.815,"C4C >500m²":16.1524,"C4C >1000m²":15.8194,"C4C >2000m²":15.4864},"unite":"M2","eco":0.2880},
+{"ref":"RP100318","famille":"Tessera","gamme":"TESSERA ACCORD (50x50 - 4m²)","tarifs":{"OR":17.376,"ARGENT":18.4186,"BRONZE":21.72,"C4C >500m²":16.8547,"C4C >1000m²":16.5072,"C4C >2000m²":16.1597},"unite":"M2","eco":0.2907},
+{"ref":"RP100376","famille":"Tessera","gamme":"TESSERA ACCORD SOFTBAC (50x50 - 3m²)","tarifs":{"OR":19.376,"ARGENT":20.4186,"BRONZE":23.72,"C4C >500m²":18.7947,"C4C >1000m²":18.4072,"C4C >2000m²":18.0197},"unite":"M2","eco":0.3671},
+{"ref":"RP100202","famille":"Tessera","gamme":"TESSERA CHROMA (50x50 - 4m²)","tarifs":{"OR":17.376,"ARGENT":18.4186,"BRONZE":21.72,"C4C >500m²":16.8547,"C4C >1000m²":16.5072,"C4C >2000m²":16.1597},"unite":"M2","eco":0.2851},
+{"ref":"RP000734","famille":"Tessera","gamme":"TESSERA CLOUDSCAPE (50x50 - 4m²)","tarifs":{"OR":17.376,"ARGENT":18.4186,"BRONZE":21.72,"C4C >500m²":16.8547,"C4C >1000m²":16.5072,"C4C >2000m²":16.1597},"unite":"M2","eco":0.2931,"note":">150m² = 16,85 €"},
+{"ref":"RP100375","famille":"Tessera","gamme":"TESSERA CLOUDSCAPE SOFTBAC (50x50 - 3m²)","tarifs":{"OR":19.376,"ARGENT":20.4186,"BRONZE":23.72,"C4C >500m²":18.7947,"C4C >1000m²":18.4072,"C4C >2000m²":18.0197},"unite":"M2","eco":0.3626},
+{"ref":"RP100333","famille":"Tessera","gamme":"TESSERA HARMONY (50x50 - 4m²)","tarifs":{"OR":17.376,"ARGENT":18.4186,"BRONZE":21.72,"C4C >500m²":16.8547,"C4C >1000m²":16.5072,"C4C >2000m²":16.1597},"unite":"M2","eco":0.2988},
+{"ref":"RP100312","famille":"Tessera","gamme":"TESSERA INFUSED (50x50 - 4m²)","tarifs":{"OR":17.376,"ARGENT":18.4186,"BRONZE":21.72,"C4C >500m²":16.8547,"C4C >1000m²":16.5072,"C4C >2000m²":16.1597},"unite":"M2","eco":0.2988},
+{"ref":"RP000547","famille":"Tessera","gamme":"TESSERA INLINE (50x50 - 4m²)","tarifs":{"OR":17.376,"ARGENT":18.4186,"BRONZE":21.72,"C4C >500m²":16.8547,"C4C >1000m²":16.5072,"C4C >2000m²":16.1597},"unite":"M2","eco":0.2889,"note":"Arrêt 07.04.2026"},
+{"ref":"RP000648","famille":"Tessera","gamme":"TESSERA STRUKTUR 1 (50x50 - 5m²)","tarifs":{"OR":17.8104,"ARGENT":18.879,"BRONZE":22.263,"C4C >500m²":17.2761,"C4C >1000m²":16.9199,"C4C >2000m²":16.5637},"unite":"M2","eco":0.2588},
+{"ref":"RP000577","famille":"Tessera","gamme":"TESSERA DIFFUSION (50x50 - 4m²)","tarifs":{"OR":19.2584,"ARGENT":20.4139,"BRONZE":24.073,"C4C >500m²":18.6806,"C4C >1000m²":18.2955,"C4C >2000m²":17.9103},"unite":"M2","eco":0.2865},
+{"ref":"RP000285","famille":"Tessera","gamme":"TESSERA CONTOUR (50x50 - 4m²)","tarifs":{"OR":21.2856,"ARGENT":22.5627,"BRONZE":26.607,"C4C >500m²":20.647,"C4C >1000m²":20.2213,"C4C >2000m²":19.7956},"unite":"M2","eco":0.2896},
+{"ref":"RP000161","famille":"Tessera","gamme":"TESSERA PERSPECTIVE (50x50 - 4m²)","tarifs":{"OR":21.2856,"ARGENT":22.5627,"BRONZE":26.607,"C4C >500m²":20.647,"C4C >1000m²":20.2213,"C4C >2000m²":19.7956},"unite":"M2","eco":0.2943},
+/* ===== CORAL ===== */
+{"ref":"RP000165","famille":"Coral","gamme":"CORAL Bright lés 200","tarifs":{"<10m²":37.145,"10-20m²":36.031,"20-50m²":35.288,">50m² (1rl)":34.545,"Stockistes":33.431},"unite":"M2","eco":0.4845},
+{"ref":"RP000518","famille":"Coral","gamme":"CORAL Classic lés 105/155/205","tarifs":{"<10m²":43.7,"10-20m²":42.389,"20-50m²":41.515,">50m² (1rl)":40.641,"Stockistes":39.33},"unite":"M2","eco":0.4088},
+{"ref":"RP100351","famille":"Coral","gamme":"CORAL Brush lés 105/155/205","tarifs":{"<10m²":50.255,"10-20m²":48.747,"20-50m²":47.742,">50m² (1rl)":46.737,"Stockistes":45.23},"unite":"M2","eco":0.4088},
+{"ref":"RP000520","famille":"Coral","gamme":"CORAL Duo lés 205","tarifs":{"<10m²":52.44,"10-20m²":50.867,"20-50m²":49.818,">50m² (1rl)":48.769,"Stockistes":47.196},"unite":"M2","eco":0.3886},
+{"ref":"RP000664","famille":"Coral","gamme":"CORAL Welcome lés 205","tarifs":{"<10m²":52.44,"10-20m²":50.867,"20-50m²":49.818,">50m² (1rl)":48.769,"Stockistes":47.196},"unite":"M2","eco":0.3987},
+{"ref":"RP000556","famille":"Coral","gamme":"CORAL Grip MD lés 122","tarifs":{"<10m²":87.4,"10-20m²":84.778,"20-50m²":83.03,">50m² (1rl)":81.282,"Stockistes":78.66},"unite":"M2","eco":0.3533},
+{"ref":"RP000569","famille":"Coral","gamme":"CORAL Grip MD EV lés 127","tarifs":{"<10m²":91.77,"10-20m²":89.017,"20-50m²":87.182,">50m² (1rl)":85.346,"Stockistes":82.593},"unite":"M2","eco":0.7015},
+{"ref":"RP000554","famille":"Coral","gamme":"CORAL Grip HD lés 122","tarifs":{"<10m²":100.51,"10-20m²":97.495,"20-50m²":95.485,">50m² (1rl)":93.474,"Stockistes":90.459},"unite":"M2","eco":0.5551},
+{"ref":"RP000570","famille":"Coral","gamme":"CORAL Grip HD EV lés 127","tarifs":{"<10m²":105.536,"10-20m²":102.369,"20-50m²":100.259,">50m² (1rl)":98.148,"Stockistes":94.982},"unite":"M2","eco":0.9437},
+{"ref":"RP000550","famille":"Coral","gamme":"CORAL Classic tapis 55x90","tarifs":{"1-2 tapis":30.59,"3-4 tapis":29.672,"5-6 tapis":29.061,"+7 tapis":28.449,"Stockistes":27.531},"unite":"PCE","eco":0.28},
+{"ref":"RP000521","famille":"Coral","gamme":"CORAL Classic tapis 90x155","tarifs":{"1-2 tapis":45.885,"3-4 tapis":44.508,"5-6 tapis":43.591,"+7 tapis":42.673,"Stockistes":41.297},"unite":"PCE","eco":0.791},
+{"ref":"RP000522","famille":"Coral","gamme":"CORAL Classic tapis 135x205","tarifs":{"1-2 tapis":91.77,"3-4 tapis":89.017,"5-6 tapis":87.182,"+7 tapis":85.346,"Stockistes":82.593},"unite":"PCE","eco":1.575},
+{"ref":"RP100352","famille":"Coral","gamme":"CORAL Brush tapis 55x90","tarifs":{"1-2 tapis":35.179,"3-4 tapis":34.123,"5-6 tapis":33.42,"+7 tapis":32.716,"Stockistes":31.661},"unite":"PCE","eco":0.287},
+{"ref":"RP100353","famille":"Coral","gamme":"CORAL Brush tapis 90x155","tarifs":{"1-2 tapis":52.768,"3-4 tapis":51.185,"5-6 tapis":50.129,"+7 tapis":49.074,"Stockistes":47.491},"unite":"PCE","eco":0.812},
+{"ref":"RP100354","famille":"Coral","gamme":"CORAL Brush tapis 135x205","tarifs":{"1-2 tapis":105.536,"3-4 tapis":102.369,"5-6 tapis":100.259,"+7 tapis":98.148,"Stockistes":94.982},"unite":"PCE","eco":1.61},
+{"ref":"RP000665","famille":"Coral","gamme":"CORAL Welcome tapis 105x155","tarifs":{"1-2 tapis":110.124,"3-4 tapis":106.82,"5-6 tapis":104.618,"+7 tapis":102.415},"unite":"PCE","eco":0.63},
+{"ref":"RP000557","famille":"Coral","gamme":"CORAL Grip MD tapis 60x90","tarifs":{"1-2 tapis":61.18,"3-4 tapis":59.345,"5-6 tapis":58.121,"+7 tapis":56.897,"Stockistes":55.062},"unite":"PCE","eco":0.266},
+{"ref":"RP000555","famille":"Coral","gamme":"CORAL Grip HD tapis 60x90","tarifs":{"1-2 tapis":70.357,"3-4 tapis":68.246,"5-6 tapis":66.839,"+7 tapis":65.432,"Stockistes":63.321},"unite":"PCE","eco":0.4158},
+{"ref":"RP000168","famille":"Coral","gamme":"CORAL Bright dalles 50x50","tarifs":{"<10m²":39.33,"10-20m²":38.15,"20-50m²":37.364,">50m²":36.577,"Stockistes":35.397},"unite":"M2","eco":0.658},
+{"ref":"RP000128","famille":"Coral","gamme":"CORAL Classic dalles 50x50","tarifs":{"<10m²":45.885,"10-20m²":44.508,"20-50m²":43.591,">50m²":42.673,"Stockistes":41.297},"unite":"M2","eco":0.658},
+{"ref":"RP100320","famille":"Coral","gamme":"CORAL Classic PRO-FIT QUATTRO 50x50","tarifs":{"<10m²":48.179,"10-20m²":46.734,"20-50m²":45.77,">50m²":44.807,"Stockistes":43.361},"unite":"M2","eco":0.742},
+{"ref":"RP100356","famille":"Coral","gamme":"CORAL Brush dalles 50x50","tarifs":{"<10m²":50.255,"10-20m²":48.747,"20-50m²":47.742,">50m²":46.737,"Stockistes":45.23},"unite":"M2","eco":0.658},
+{"ref":"RP100357","famille":"Coral","gamme":"CORAL Brush PRO-FIT QUATTRO 50x50","tarifs":{"<10m²":52.768,"10-20m²":51.185,"20-50m²":50.129,">50m²":49.074,"Stockistes":47.491},"unite":"M2","eco":0.756},
+{"ref":"RP100358","famille":"Coral","gamme":"CORAL Bright lés sur mesure bordés","tarifs":{"<10m²":46.431},"unite":"M2","eco":0.323,"note":"Sur mesure / bordés 4 côtés"},
+{"ref":"RP000599","famille":"Coral","gamme":"CORAL Classic lés sur mesure bordés","tarifs":{"<10m²":54.625},"unite":"M2","eco":0.384,"note":"Sur mesure / bordés 4 côtés"},
+{"ref":"RP100359","famille":"Coral","gamme":"CORAL Brush lés sur mesure bordés","tarifs":{"<10m²":62.819},"unite":"M2","eco":0.343,"note":"Sur mesure / bordés 4 côtés"},
+{"ref":"RP100360","famille":"Coral","gamme":"CORAL Duo lés sur mesure bordés","tarifs":{"<10m²":65.55},"unite":"M2","eco":0.333,"note":"Sur mesure / bordés 4 côtés"},
+{"ref":"RP100362","famille":"Coral","gamme":"CORAL Welcome lés sur mesure bordés","tarifs":{"<10m²":65.55},"unite":"M2","eco":0.313,"note":"Sur mesure / bordés 4 côtés"},
+{"ref":"RP100361","famille":"Coral","gamme":"CORAL Luxe lés sur mesure bordés","tarifs":{"<10m²":79.206},"unite":"M2","eco":0.343,"note":"Sur mesure / bordés 4 côtés"},
+{"ref":"RP000614","famille":"Coral","gamme":"4800 Coral Logo Print 60x90cm","tarifs":{"1-4 tapis":118,"5-49 tapis":106.2,"+50 tapis":82.6},"unite":"PCE","eco":0.28},
+{"ref":"RP000610","famille":"Coral","gamme":"4800 Coral Logo Print 115x155cm","tarifs":{"1-4 tapis":196,"5-49 tapis":176.4,"+50 tapis":137.2},"unite":"PCE","eco":0.77},
+{"ref":"RP000611","famille":"Coral","gamme":"4800 Coral Logo Print 115x300cm","tarifs":{"1-4 tapis":355,"5-49 tapis":319.5,"+50 tapis":248.5},"unite":"PCE","eco":1.4},
+{"ref":"RP000613","famille":"Coral","gamme":"4800 Coral Logo Print 155x200cm","tarifs":{"1-4 tapis":404,"5-49 tapis":363.6,"+50 tapis":282.8},"unite":"PCE","eco":2.1},
+{"ref":"RP000612","famille":"Coral","gamme":"4800 Coral Logo Print 150x300cm","tarifs":{"1-4 tapis":561,"5-49 tapis":504.9,"+50 tapis":392.7},"unite":"PCE","eco":1.96},
+{"ref":"RP100363","famille":"Coral","gamme":"4800 Coral Logo Print 200x200cm","tarifs":{"1-4 tapis":466,"5-49 tapis":419.4,"+50 tapis":326.2},"unite":"PCE","eco":2.24},
+{"ref":"RP100364","famille":"Coral","gamme":"4800 Coral Logo Print 200x300cm","tarifs":{"1-4 tapis":638,"5-49 tapis":574.2,"+50 tapis":446.6},"unite":"PCE","eco":3.36},
+{"ref":"RP000542","famille":"Coral","gamme":"CORAL Luxe lés 105/205","tarifs":{"<10m²":63.365,"10-20m²":61.464,"20-50m²":60.197,">50m² (1rl)":58.929,"Stockistes":57.029},"unite":"M2","eco":0.4138,"note":"Arrêt 14.04.2026"},
+{"ref":"RP000164","famille":"Coral","gamme":"CORAL Interior dalles & Lames","tarifs":{"<10m²":58.995,"10-20m²":57.225,"20-50m²":56.045,">50m²":54.865,"Stockistes":53.096},"unite":"M2","eco":0.658,"note":"Arrêt 14.04.2026"},
+/* ===== TRANSPORT FR ===== */
+{"ref":"RP100050","famille":"CORAL FR","gamme":"Transport - CORAL FR MARINE 185","tarifs":{"C4C >500m²":45.131,"C4C >1000m²":43.817,"C4C >2000m²":41.73},"unite":"M2","eco":null},
+{"ref":"RP000567","famille":"CORAL FR","gamme":"Transport - CORAL FR CLASSIC 185","tarifs":{"C4C >500m²":49.76,"C4C >1000m²":48.311,"C4C >2000m²":46.01},"unite":"M2","eco":null},
+{"ref":"RP000568","famille":"CORAL FR","gamme":"Transport - CORAL FR BRUSH 185","tarifs":{"C4C >500m²":52.074,"C4C >1000m²":50.558,"C4C >2000m²":48.15},"unite":"M2","eco":null},
+{"ref":"RP000663","famille":"CORAL FR","gamme":"Transport - CORAL FR WELCOME 190","tarifs":{"C4C >500m²":55.546,"C4C >1000m²":53.928,"C4C >2000m²":51.36},"unite":"M2","eco":null},
+{"ref":"RP000652","famille":"CORAL FR","gamme":"Transport - CORAL FR DUO 190","tarifs":{"C4C >500m²":57.86,"C4C >1000m²":56.175,"C4C >2000m²":53.5},"unite":"M2","eco":null},
+{"ref":"RP000564","famille":"CORAL FR","gamme":"Transport - CORAL FR LUXE 185","tarifs":{"C4C >500m²":75.218,"C4C >1000m²":73.028,"C4C >2000m²":69.55},"unite":"M2","eco":null},
+{"ref":"RP100365","famille":"CORAL FR","gamme":"Transport - CORAL FR MOVE 185","tarifs":{"C4C >500m²":43.974,"C4C >1000m²":42.693,"C4C >2000m²":40.66},"unite":"M2","eco":null},
+{"ref":"AA006394","famille":"CORAL FR","gamme":"Transport - CORAL FR MOVE VISION 185","tarifs":{"C4C >500m²":55.546,"C4C >1000m²":53.928,"C4C >2000m²":51.36},"unite":"M2","eco":null},
+{"ref":"RP100346","famille":"FLOTEX FR","gamme":"Transport - FLOTEX FR VISION 200","tarifs":{"C4C >500m²":32.402,"C4C >1000m²":31.458,"C4C >2000m²":29.96},"unite":"M2","eco":null},
+{"ref":"RP000032","famille":"FLOTEX FR","gamme":"Transport - FLOTEX FR COLOUR 200","tarifs":{"C4C >500m²":32.402,"C4C >1000m²":31.458,"C4C >2000m²":29.96},"unite":"M2","eco":null},
+{"ref":"AA006137","famille":"MARMOLEUM FR²","gamme":"Transport - MARMOLEUM FR2 REAL","tarifs":{"C4C >500m²":32.402,"C4C >1000m²":31.458,"C4C >2000m²":29.96},"unite":"M2","eco":null},
+{"ref":"RP000034","famille":"MARMOLEUM FR","gamme":"Transport - MARMOLEUM FR LINEAR/STRIATO","tarifs":{"C4C >500m²":34.716,"C4C >1000m²":33.705,"C4C >2000m²":32.1},"unite":"M2","eco":null},
+{"ref":"RP000035","famille":"TESSERA FR","gamme":"Transport - TESSERA FR 185","tarifs":{"C4C >500m²":32.402,"C4C >1000m²":31.458,"C4C >2000m²":29.96},"unite":"M2","eco":null},
+/* ===== VINCI (Entreprise Générale) ===== */
+];
+
+// ===== COLLES PAR FAMILLE/GAMME =====
+// Clé = famille ou ref spécifique, valeur = tableau de colles
+var COLLES_MAP = {
+  // MARMOLEUM (colles générales)
+  "Marmoleum": [
+    {ref:"RP000129", nom:"418 Euroflex lino polaris", type:"Colle Marmoleum — fût 14 kg",prix:3.27,uniteprix:"/KG",c4c:{">500m²": 2.978, ">1000m²": 2.916, ">2000m²": 2.855}},
+    {ref:"RP000276", nom:"611 Eurostar lino plus", type:"Colle Marmoleum / Bulletin Board / Sport — fût 11 kg",prix:4.76,uniteprix:"/KG",c4c:{">500m²": 4.317, ">1000m²": 4.228, ">2000m²": 4.139}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Colle Marmoleum / Modular & Decibel — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}},
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle Modular & Decibel — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000191", nom:"640 Eurostar special", type:"Colle Modular & Decibel — fût 13 kg",prix:4.11,uniteprix:"/KG",c4c:{">500m²": 3.744, ">1000m²": 3.667, ">2000m²": 3.59}}
+  ],
+  // Marmoleum OHMEX spécifique
+  "Marmoleum_OHMEX": [
+    {ref:"RP000160", nom:"615 EC Eurostar lino", type:"Colle Marmoleum Ohmex (conductrice) — fût 11 kg + spatule",prix:8.1,uniteprix:"/KG",c4c:{">500m²": 7.362, ">1000m²": 7.21, ">2000m²": 7.059}}
+  ],
+  // Marmoleum CLICK spécifique
+  "Marmoleum_CLICK": [
+    {ref:"RP100370", nom:"882 Eurobond HighTack", type:"Colle de montage Click — carton 12 cartouches 290 ml",prix:71.46,uniteprix:"/CAR",c4c:{">500m²": 69.316, ">1000m²": 67.887, ">2000m²": 66.458}}
+  ],
+  // Marmoleum SPORT
+  "Marmoleum_SPORT": [
+    {ref:"RP000276", nom:"611 Eurostar lino plus", type:"Colle Marmo Sport — fût 11 kg",prix:4.76,uniteprix:"/KG",c4c:{">500m²": 4.317, ">1000m²": 4.228, ">2000m²": 4.139}}
+  ],
+  // Bulletin Board / Furniture lino
+  "Furniture lino": [
+    {ref:"RP000276", nom:"611 Eurostar lino plus", type:"Colle Bulletin Board — fût 11 kg",prix:4.76,uniteprix:"/KG",c4c:{">500m²": 4.317, ">1000m²": 4.228, ">2000m²": 4.139}},
+    {ref:"RP100335", nom:"650 Eurostar Fastcol", type:"Colle Bulletin Board — fût 7,5 kg",prix:7.34,uniteprix:"/KG",c4c:{">500m²": 6.683, ">1000m²": 6.545, ">2000m²": 6.408}}
+  ],
+  // LVT COLLÉE / POISSÉE
+  "LVT": [
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Pose collée — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000191", nom:"640 Eurostar special", type:"Pose collée — fût 13 kg",prix:4.11,uniteprix:"/KG",c4c:{">500m²": 3.744, ">1000m²": 3.667, ">2000m²": 3.59}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Pose collée — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}},
+    {ref:"RP100398", nom:"542 Eurofix tack plus", type:"Pose poissée — bidon 5 ou 10 kg",prix:6.95,uniteprix:"/KG",c4c:{">500m²": 5.674, ">1000m²": 5.557, ">2000m²": 5.441}},
+    {ref:"RP000213", nom:"140 Euromix PU", type:"Colle technique PU — fût 13,4 kg",prix:6.35,uniteprix:"/KG",c4c:{">500m²": 5.83, ">1000m²": 5.709, ">2000m²": 5.589}}
+  ],
+  // LVT à clipser (pas de colle, sous-couche uniquement)
+  "LVT_CLIP": [
+    {ref:"RP000579", nom:"U54002 Sous-couche 15dB LVT", type:"Sous-couche LVT à clipser — 10 m²",prix:3.648,uniteprix:"/M2",c4c:{">500m²": 3.539, ">1000m²": 3.466, ">2000m²": 3.393}}
+  ],
+  // U2S / PVC à coller
+  "U2S": [
+    {ref:"RP000073", nom:"522 Eurosafe tack", type:"Colle PVC en lés — fût 13 kg",prix:3.6,uniteprix:"/KG",c4c:{">500m²": 3.279, ">1000m²": 3.211, ">2000m²": 3.143}},
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle PVC en lés — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000170", nom:"622 Eurostar tack", type:"Colle PVC en lés — fût 13 kg",prix:3.78,uniteprix:"/KG",c4c:{">500m²": 3.443, ">1000m²": 3.372, ">2000m²": 3.301}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Colle PVC en lés — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}}
+  ],
+  // U3/U4 acoust. / Compact Lés / Modul'up / Sarlon
+  "U3/U4 acoust.": [
+    {ref:"RP000073", nom:"522 Eurosafe tack", type:"Colle PVC en lés — fût 13 kg",prix:3.6,uniteprix:"/KG",c4c:{">500m²": 3.279, ">1000m²": 3.211, ">2000m²": 3.143}},
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle PVC en lés — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000170", nom:"622 Eurostar tack", type:"Colle PVC en lés — fût 13 kg",prix:3.78,uniteprix:"/KG",c4c:{">500m²": 3.443, ">1000m²": 3.372, ">2000m²": 3.301}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Colle PVC en lés — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}}
+  ],
+  "Compact Lés": [
+    {ref:"RP000073", nom:"522 Eurosafe tack", type:"Colle PVC en lés — fût 13 kg",prix:3.6,uniteprix:"/KG",c4c:{">500m²": 3.279, ">1000m²": 3.211, ">2000m²": 3.143}},
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle PVC en lés — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000170", nom:"622 Eurostar tack", type:"Colle PVC en lés — fût 13 kg",prix:3.78,uniteprix:"/KG",c4c:{">500m²": 3.443, ">1000m²": 3.372, ">2000m²": 3.301}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Colle PVC en lés — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}}
+  ],
+  "Produits blancs": [
+    {ref:"RP000073", nom:"522 Eurosafe tack", type:"Colle PVC en lés — fût 13 kg",prix:3.6,uniteprix:"/KG",c4c:{">500m²": 3.279, ">1000m²": 3.211, ">2000m²": 3.143}},
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle PVC en lés — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000170", nom:"622 Eurostar tack", type:"Colle PVC en lés — fût 13 kg",prix:3.78,uniteprix:"/KG",c4c:{">500m²": 3.443, ">1000m²": 3.372, ">2000m²": 3.301}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Colle PVC en lés — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}}
+  ],
+  "Homogènes": [
+    {ref:"RP000312", nom:"523 Eurostar tack EC", type:"Colle Colorex / Sphera SD/EC — fût 12 kg",prix:4.81,uniteprix:"/KG",c4c:{">500m²": 4.394, ">1000m²": 4.303, ">2000m²": 4.213}},
+    {ref:"RP000073", nom:"522 Eurosafe tack", type:"Colle PVC en lés — fût 13 kg",prix:3.6,uniteprix:"/KG",c4c:{">500m²": 3.279, ">1000m²": 3.211, ">2000m²": 3.143}},
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle PVC en lés — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000170", nom:"622 Eurostar tack", type:"Colle PVC en lés — fût 13 kg",prix:3.78,uniteprix:"/KG",c4c:{">500m²": 3.443, ">1000m²": 3.372, ">2000m²": 3.301}}
+  ],
+  // MODUL'UP & SEMI-LIBRE (adhésifs + colles)
+  "Modul'up": [
+    {ref:"RP000561", nom:"792 Bande de jonction pose libre", type:"Adhésif pose semi-libre — rouleau 50 m",prix:25.822,uniteprix:"/ROL",c4c:{">500m²": 25.047, ">1000m²": 24.531, ">2000m²": 24.014}},
+    {ref:"RP100339", nom:"840 Eurotape Doubletack 240", type:"Adhésif double-face 240 mm — rouleau 25 m",prix:39.394,uniteprix:"/PCE",c4c:{">500m²": 38.212, ">1000m²": 37.424, ">2000m²": 36.636}},
+    {ref:"RP100300", nom:"840 Eurotape Doubletack 50", type:"Adhésif double-face 50 mm — rouleau 50 m",prix:16.38,uniteprix:"/PCE",c4c:{">500m²": 15.889, ">1000m²": 15.561, ">2000m²": 15.233}},
+    {ref:"RP100301", nom:"840 Eurotape Doubletack 90", type:"Adhésif double-face 90 mm — rouleau 50 m",prix:25.868,uniteprix:"/PCE",c4c:{">500m²": 25.092, ">1000m²": 24.575, ">2000m²": 24.057}}
+  ],
+  // FLOTEX (lés et dalles)
+  "Flotex": [
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle pour lés — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Colle pour lés — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}},
+    {ref:"RP000073", nom:"522 Eurosafe tack", type:"Colle PVC en lés — fût 13 kg",prix:3.6,uniteprix:"/KG",c4c:{">500m²": 3.279, ">1000m²": 3.211, ">2000m²": 3.143}},
+    {ref:"RP000170", nom:"622 Eurostar tack", type:"Colle PVC en lés — fût 13 kg",prix:3.78,uniteprix:"/KG",c4c:{">500m²": 3.443, ">1000m²": 3.372, ">2000m²": 3.301}},
+    {ref:"RP100398", nom:"542 Eurofix tack plus", type:"Pose poissée — bidon 5 ou 10 kg",prix:6.95,uniteprix:"/KG",c4c:{">500m²": 5.674, ">1000m²": 5.557, ">2000m²": 5.441}}
+  ],
+  "Flotex Next": [
+    {ref:"RP000561", nom:"792 Bande de jonction pose libre", type:"Adhésif NEXT — rouleau 50 m",prix:25.822,uniteprix:"/ROL",c4c:{">500m²": 25.047, ">1000m²": 24.531, ">2000m²": 24.014}},
+    {ref:"RP100339", nom:"840 Eurotape Doubletack 240", type:"Adhésif NEXT 240 mm — rouleau 25 m",prix:39.394,uniteprix:"/PCE",c4c:{">500m²": 38.212, ">1000m²": 37.424, ">2000m²": 36.636}},
+    {ref:"RP100300", nom:"840 Eurotape Doubletack 50", type:"Adhésif NEXT 50 mm — rouleau 50 m",prix:16.38,uniteprix:"/PCE",c4c:{">500m²": 15.889, ">1000m²": 15.561, ">2000m²": 15.233}},
+    {ref:"RP100301", nom:"840 Eurotape Doubletack 90", type:"Adhésif NEXT 90 mm — rouleau 50 m",prix:25.868,uniteprix:"/PCE",c4c:{">500m²": 25.092, ">1000m²": 24.575, ">2000m²": 24.057}},
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Colle pour lés — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP100332", nom:"644 Eurostar multi plus", type:"Colle pour lés — fût 12 ou 6 kg",prix:4.18,uniteprix:"/KG",c4c:{">500m²": 3.861, ">1000m²": 3.781, ">2000m²": 3.701}}
+  ],
+  // TESSERA
+  "Tessera": [
+    {ref:"RP000219", nom:"541 Eurofix anti slip", type:"Colle Tessera — fût 10 kg",prix:5.69,uniteprix:"/KG",c4c:{">500m²": 5.189, ">1000m²": 5.082, ">2000m²": 4.976}},
+    {ref:"RP000212", nom:"841 Europrimer EC", type:"Primaire Tessera — fût 3,5 kg",prix:17.666,uniteprix:"/KG",c4c:{">500m²": 16.573, ">1000m²": 16.231, ">2000m²": 15.89}}
+  ],
+  // AIGUILLETÉS
+  "Aiguilletés": [
+    {ref:"RP000207", nom:"609 Eurostar Tex", type:"Colle pose collée — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP100398", nom:"542 Eurofix tack plus", type:"Pose poissée — bidon 5 ou 10 kg",prix:6.95,uniteprix:"/KG",c4c:{">500m²": 5.674, ">1000m²": 5.557, ">2000m²": 5.441}},
+    {ref:"RP000171", nom:"542 Eurofix tack plus 10kg", type:"Pose poissée — bidon 10 kg",prix:6.78,uniteprix:"/KG",c4c:{">500m²": 5.529, ">1000m²": 5.415, ">2000m²": 5.301}}
+  ],
+  // CORAL
+  "Coral": [
+    {ref:"RP000292", nom:"528 Eurostar all round", type:"Pose collée en plein — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000191", nom:"640 Eurostar special", type:"Pose collée en plein — fût 13 kg",prix:4.11,uniteprix:"/KG",c4c:{">500m²": 3.744, ">1000m²": 3.667, ">2000m²": 3.59}},
+    {ref:"RP100398", nom:"542 Eurofix tack plus", type:"Pose poissée — bidon 5 ou 10 kg",prix:6.95,uniteprix:"/KG",c4c:{">500m²": 5.674, ">1000m²": 5.557, ">2000m²": 5.441}}
+  ],
+  // SARLON MARCHE COMPLETE
+  "SARLON_MARCHE": [
+    {ref:"RP100335", nom:"650 Eurostar Fastcol", type:"Adhésif marches complètes — fût 7,5 kg",prix:7.34,uniteprix:"/KG",c4c:{">500m²": 6.683, ">1000m²": 6.545, ">2000m²": 6.408}},
+    {ref:"RP100339", nom:"840 Eurotape Doubletack 240", type:"Adhésif marches complètes 240 mm — rouleau 25 m",prix:39.394,uniteprix:"/PCE",c4c:{">500m²": 38.212, ">1000m²": 37.424, ">2000m²": 36.636}},
+    {ref:"RP100300", nom:"840 Eurotape Doubletack 50", type:"Adhésif marches complètes 50 mm — rouleau 50 m",prix:16.38,uniteprix:"/PCE",c4c:{">500m²": 15.889, ">1000m²": 15.561, ">2000m²": 15.233}}
+  ],
+  // SURESTEP / SAFESTEP (remontées plinthes)
+  "SURESTEP": [
+    {ref:"RP100335", nom:"650 Eurostar Fastcol", type:"Colle remontées plinthes Surestep — fût 7,5 kg",prix:7.34,uniteprix:"/KG",c4c:{">500m²": 6.683, ">1000m²": 6.545, ">2000m²": 6.408}},
+    {ref:"RP100339", nom:"840 Eurotape Doubletack 240", type:"Adhésif remontées 240 mm — rouleau 25 m",prix:39.394,uniteprix:"/PCE",c4c:{">500m²": 38.212, ">1000m²": 37.424, ">2000m²": 36.636}}
+  ],
+  // VINCI Moquette (colles / accessoires — grille tarifaire VINCI, onglet "Autres Produits")
+  "Vinci Moquette": [
+    {ref:"RP000219", nom:"Eurofix Anti Slip", type:"Colle Tessera dalles/lames — fût 10 kg",prix:5.69,uniteprix:"/KG",c4c:{">500m²": 5.189, ">1000m²": 5.082, ">2000m²": 4.976}},
+    {ref:"RP000212", nom:"841 Europrimer EC", type:"Primaire d'accrochage — bidon 3,5 L",prix:17.666,uniteprix:"/KG",c4c:{">500m²": 16.573, ">1000m²": 16.231, ">2000m²": 15.89}},
+    {ref:"RP100044", nom:"801 Feuillard de cuivre adhésivé", type:"Accessoire mise à la terre — bobine 20 m",prix:0.24,uniteprix:"/M",c4c:{">500m²": 0.233, ">1000m²": 0.228, ">2000m²": 0.223}},
+    {ref:"RP000207", nom:"609 Eurostar Tex", type:"Colle pose collée textile — fût 13 kg",prix:3.18,uniteprix:"/KG",c4c:{">500m²": 2.9, ">1000m²": 2.841, ">2000m²": 2.781}},
+    {ref:"RP000171", nom:"542 Eurofix Tack Plus", type:"Colle/fixateur pose poissée — bidon 10 kg",prix:6.78,uniteprix:"/KG",c4c:{">500m²": 5.529, ">1000m²": 5.415, ">2000m²": 5.301}}
+  ]
+};
+
+// Retourne les colles pour un produit donné
+function getColles(p){
+  var f = p.famille;
+  var g = p.gamme;
+  var ref = p.ref;
+  var colles = [];
+  // Cas spécifiques par ref ou gamme
+  if(ref === "RP000011" || g.indexOf("OHMEX") >= 0){
+    colles = COLLES_MAP["Marmoleum_OHMEX"];
+  } else if(ref === "RP100001" || g.indexOf("CLICK") >= 0 && f === "Marmoleum"){
+    colles = COLLES_MAP["Marmoleum_CLICK"];
+  } else if(g.indexOf("SPORT") >= 0 && f === "Marmoleum"){
+    colles = COLLES_MAP["Marmoleum_SPORT"].concat(COLLES_MAP["Marmoleum"].slice(0,2));
+  } else if(ref === "RP000048" || g.indexOf("MARCHE COMPLETE") >= 0){
+    colles = COLLES_MAP["SARLON_MARCHE"];
+  } else if(g.indexOf("SURESTEP") >= 0 || g.indexOf("SAFESTEP") >= 0){
+    colles = COLLES_MAP["SURESTEP"].concat(COLLES_MAP["Compact Lés"].slice(0,2));
+  } else if(g.indexOf("ALLURA CLICK") >= 0 || g.indexOf("ENDURO CLICK") >= 0 || g.indexOf("PUZZLE") >= 0){
+    colles = COLLES_MAP["LVT_CLIP"];
+  } else if(COLLES_MAP[f]){
+    colles = COLLES_MAP[f];
+  }
+  // Déduplique par ref
+  var seen = {};
+  return colles.filter(function(c){ if(seen[c.ref]) return false; seen[c.ref]=1; return true; });
+}
+
+var CAT_PVC  = {"LVT":1,"U2S":1,"U3/U4 acoust.":1,"Modul'up":1,"Compact Lés":1,"Produits blancs":1,"Résidentiel":1,"Homogènes":1};
+var CAT_MARM = {"Marmoleum":1,"Furniture lino":1,"MARMOLEUM FR":1,"MARMOLEUM FR²":1};
+var CAT_TEXT = {"Flotex":1,"Flotex Next":1,"FLOTEX FR":1,"Tessera":1,"TESSERA FR":1,"Aiguilletés":1,"Coral":1,"CORAL FR":1};
+var CAT_NUWAY = {"Nuway":1};
+var CAT_TRANSPORT = {"CORAL FR":1,"FLOTEX FR":1,"MARMOLEUM FR":1,"MARMOLEUM FR²":1,"TESSERA FR":1};
+
+
+var SURCHARGES = {
+  pvc:  {rate:0.055, label:"PVC & Sol souple +5,5%"},
+  marm: {rate:0.030, label:"Marmoleum & Lino +3%"},
+  text: {rate:0.035, label:"Textile & Flotex +3,5%"}
+};
+
+// ===== PRIX NÉGOCIÉS CPV (grands comptes / centrales) =====
+var CPV_DATA = {"solaset": {"label": "CPV Solaset", "clients": [{"id": "SOLASET", "label": "SOLASET", "items": {"RP000583": 11.4, "RP000588": 19.2, "RP000621": 21.1, "RP100351": 37.54, "RP000518": 32.64, "RP000646": 13.5, "RP000028": 14.9, "RP000509": 28.09, "RP000513": 34.71, "RP000581": 35.7, "RP000510": 31.54, "RP100395": 10.02, "RP000001": 9.78, "RP000162": 9.93, "RP000009": 14.18, "RP000169": 15.6, "RP000715": 17.0, "RP000150": 17.1, "RP000136": 11.18, "RP1000097": 5.8, "RP000500": 10.3, "RP000501": 11.3, "RP000040": 13.5, "RP000042": 14.9, "RP000083": 58.48, "RP000201": 22.62}}]}, "centrales": {"label": "CPV et Cat. prof. Centrales", "clients": [{"id": "HBF Habitation Bâtiment Financ", "label": "HBF Habitation Bâtiment Financ", "items": {"RP000583": 11.99, "RP000063": 8.59}}, {"id": "NUANCES", "label": "NUANCES", "items": {"RP000006": 17.12, "RP100342": 28.0, "RP000509": 28.0, "RP000513": 33.5, "RP000581": 33.5, "RP000576": 18.5, "RP000565": 20.9}}, {"id": "UDIREV", "label": "UDIREV", "items": {"RP100342": 27.73, "RP000802": 33.82, "RP000509": 26.88, "RP000801": 41.17, "RP000513": 33.38, "RP000673": 33.82, "RP000581": 34.25, "RP100337": 34.75, "RP100336": 34.75, "RP000510": 30.91, "RP000715": 14.7, "RP000716": 16.25, "RP000150": 14.7, "RP000151": 16.25, "RP000048": 21.72, "RP000040": 12.25, "RP000042": 13.7, "RP000201": 23.17}}]}, "ent_generales": {"label": "CPV Entreprises Générales", "clients": [{"id": "BOUYGUES", "label": "BOUYGUES", "items": {"RP000639": 14.5, "RP000026": 17.5, "RP100340": 23.93, "RP100108": 20.2, "RP000558": 22.8, "RP000583": 11.45, "RP000588": 19.66, "RP000621": 21.96, "RP000576": 22.23, "RP000565": 25.0, "RP000671": 30.5, "RP000022": 30.71, "RP000021": 28.58, "RP100351": 40.03, "RP000518": 40.03, "RP000520": 40.03, "RP000664": 40.03, "RP000646": 14.8, "RP000028": 16.2, "RP000509": 27.48, "RP000513": 33.87, "RP000510": 30.7, "RP100395": 10.15, "RP000001": 10.15, "RP000162": 10.15, "RP000009": 14.4, "RP000169": 14.4, "RP000002": 9.93, "RP000006": 15.19, "RP000715": 16.37, "RP000716": 18.08, "RP100313": 12.7, "RP100019": 18.97, "RP100020": 21.34, "RP000063": 8.2, "RP000150": 16.37, "RP000151": 18.08, "RP000136": 10.9, "RP1000097": 6.4, "RP000048": 21.5, "RP000500": 11.6, "RP000501": 13.2, "RP000040": 14.35, "RP000042": 15.71, "RP000065": 9.11, "RP100201": 19.69, "RP000156": 13.9, "RP100305": 16.93, "RP000157": 15.56, "RP100200": 18.72, "RP000016": 20.5, "RP000185": 8.41, "RP000049": 8.41, "RP000050": 8.41, "RP000198": 10.37, "RP000201": 23.16, "RP000266": 45.76}}, {"id": "EIFFAGE", "label": "EIFFAGE", "items": {"RP100086": 12.75, "RP000639": 14.5, "RP000026": 17.5, "RP100108": 20.5, "RP000558": 24.5, "RP000583": 10.4, "RP000588": 18.68, "RP000621": 20.24, "RP000576": 21.12, "RP000565": 23.75, "RP000671": 31.0, "RP000052": 71.27, "RP000022": 22.73, "RP000024": 75.21, "RP000554": 97.25, "RP000028": 15.8, "RP000509": 28.41, "RP000513": 32.91, "RP100395": 10.3, "RP000001": 10.3, "RP000162": 10.3, "RP000009": 13.7, "RP000169": 13.7, "RP000181": 14.78, "RP000716": 18.08, "RP100313": 12.7, "RP000063": 8.2, "RP000150": 16.37, "RP000151": 18.08, "RP000537": 388.38, "RP000136": 10.9, "RP1000097": 6.1, "RP000048": 21.5, "RP000500": 10.5, "RP000501": 12.3, "RP000040": 13.5, "RP000042": 14.95, "RP000065": 9.9, "RP100201": 19.69, "RP000156": 13.9, "RP100200": 18.72, "RP000016": 20.9, "RP000514": 11.48, "RP100312": 16.23, "RP000515": 11.48, "RP000185": 8.41}}, {"id": "VINCI", "label": "VINCI", "items": {"RP100086": 11.0, "RP000639": 14.0, "RP000026": 18.0, "RP100108": 19.4, "RP000558": 22.8, "RP000583": 11.9, "RP000588": 20.0, "RP000621": 20.3, "RP000664": 51.0, "RP000646": 14.8, "RP000028": 16.2, "RP000509": 31.28, "RP000801": 41.34, "RP000513": 39.85, "RP000673": 40.99, "RP000581": 41.36, "RP100336": 38.9, "RP000510": 36.4, "RP000067": 20.13, "RP000066": 15.49, "RP100395": 10.75, "RP000001": 10.75, "RP000162": 11.94, "RP000009": 14.62, "RP000169": 15.74, "RP000181": 15.14, "RP000715": 16.8, "RP000716": 18.2, "RP100313": 11.36, "RP000063": 8.2, "RP000150": 16.08, "RP000151": 17.99, "RP000537": 451.0, "RP000136": 11.2, "RP1000097": 6.34, "RP000048": 22.1, "RP000500": 11.8, "RP000501": 13.0, "RP000040": 13.4, "RP000042": 14.99, "RP000065": 12.39, "RP000068": 13.94, "RP000156": 14.5, "RP000157": 16.9, "RP000016": 21.1, "RP100318": 16.51, "RP000514": 11.5, "RP100202": 16.51, "RP000734": 16.51, "RP000285": 21.5, "RP000007": 14.5, "RP000577": 18.3, "RP100333": 16.51, "RP100312": 16.51, "RP000515": 12.5, "RP000041": 15.1, "RP000161": 21.5, "RP000219": 5.48, "RP000171": 6.39, "RP000207": 3.0, "RP000212": 17.62}}, {"id": "GPE FAYAT / DARRAS / C&P", "label": "GPE FAYAT / DARRAS / C&P", "items": {"RP000639": 16.2, "RP000026": 19.15, "RP000583": 12.5, "RP000588": 20.25, "RP000621": 22.65, "RP000646": 15.2, "RP000028": 16.3, "RP000509": 33.5, "RP000801": 41.9, "RP000513": 41.0, "RP000510": 37.0, "RP000001": 10.95, "RP000009": 16.0, "RP000181": 15.5, "RP000715": 16.95, "RP000716": 18.2, "RP000063": 8.4, "RP000150": 16.95, "RP000151": 18.4, "RP000537": 450.0, "RP000136": 11.2, "RP1000097": 7.1, "RP000048": 22.1, "RP000500": 12.7, "RP000501": 13.8, "RP000040": 15.2, "RP000042": 16.3, "RP000156": 15.5, "RP000157": 17.5, "RP000016": 21.1, "RP000734": 17.2, "RP000515": 12.9}}, {"id": "GPE GCC CONSTRUCTION", "label": "GPE GCC CONSTRUCTION", "items": {"RP100108": 22.0, "RP000583": 12.5, "RP000588": 22.0, "RP000621": 24.0, "RP000576": 25.0, "RP000565": 29.0, "RP000671": 35.0, "RP000022": 32.0, "RP000024": 90.0, "RP000028": 17.0, "RP000509": 34.0, "RP000513": 42.0, "RP000001": 12.0, "RP000009": 16.0, "RP000181": 18.0, "RP000716": 21.0, "RP100313": 13.5, "RP000063": 10.1, "RP000150": 19.5, "RP000151": 21.0, "RP000537": 435.0, "RP1000097": 6.5, "RP000040": 16.0, "RP000042": 17.0, "RP100201": 26.0, "RP000156": 14.5, "RP000514": 12.5, "RP100312": 19.0, "RP000515": 13.5, "RP000041": 13.5}}]}, "hospitality": {"label": "CPV Grands comptes Hospitality", "clients": [{"id": "ACCOR FRANCE - ASTORE", "label": "ACCOR FRANCE - ASTORE", "items": {"RP100108": 21.11, "RP000558": 23.9, "RP100342": 25.8, "RP000509": 24.8, "RP000510": 27.2, "RP100336": 28.8, "RP000673": 29.8, "RP100337": 30.8, "RP000802": 35.28, "RP000801": 44.46, "RP000513": 32.5, "RP000581": 32.5, "RP000016": 21.09, "215179": 15.35, "173406": 15.35, "200869": 16.14, "244264": 7.64, "216496": 12.32, "219305": 26.24, "240979": 8.52, "241627": 7.31, "231439": 6.71, "231444": 6.71}}, {"id": "ADAGIO", "label": "ADAGIO", "items": {"RP000558": 22.41}}, {"id": "B & B France", "label": "B & B France", "items": {"265674": 7.04, "265676": 12.49, "265675": 12.49, "127931": 15.9, "213964": 15.9, "233793": 34.1, "259871": 8.65, "259874": 2.93, "201657": 2.93, "201494": 7.58, "141801": 7.86, "259872": 7.86, "244464": 2.93, "259875": 2.93, "246938": 12.14, "241362": 12.14, "248456": 12.14, "244265": 7.98, "244320": 8.52, "244331": 7.98, "231452": 7.58, "248377": 2.93}}, {"id": "LOUVRE HOTELS", "label": "LOUVRE HOTELS", "items": {"186867": 35.27, "187137": 35.27, "RP100313": 12.15, "RP000063": 10.07}}, {"id": "APPART'CITY", "label": "APPART'CITY", "items": {"RP000583": 10.75, "RP000588": 17.9, "RP100342": 28.7, "RP000509": 27.68, "RP000510": 29.73, "RP100336": 30.75, "RP000673": 31.78, "RP100337": 32.8, "RP000802": 30.75, "RP000801": 36.35, "RP000513": 33.31, "RP000581": 33.31}}, {"id": "BUFFALO GRILL", "label": "BUFFALO GRILL", "items": {"147273": 35.46}}, {"id": "CLARIANE (EX KORIAN)", "label": "CLARIANE (EX KORIAN)", "items": {"218930": 24.1, "230383": 18.3, "230577": 18.3}}, {"id": "DISTRIBOUCH", "label": "DISTRIBOUCH", "items": {"252804": 34.54}}, {"id": "DOMIDEP / IMMODEP", "label": "DOMIDEP / IMMODEP", "items": {"RP100351": 49.27, "RP000518": 42.84, "RP100342": 29.75, "RP000509": 28.75, "RP000510": 32.25, "RP100336": 33.25, "RP000673": 36.5, "RP100337": 37.5, "RP000715": 17.52, "RP000716": 18.75, "RP000150": 17.52, "RP000151": 18.75, "RP000016": 21.72}}, {"id": "DOMITYS", "label": "DOMITYS", "items": {"RP100342": 26.35, "RP000509": 25.35, "RP000510": 28.32, "RP100336": 29.32, "RP000673": 32.44, "RP100337": 33.44}}, {"id": "DOMUSVI", "label": "DOMUSVI", "items": {"RP000509": 29.16, "RP000513": 37.57, "RP000581": 37.57, "RP000510": 31.33, "RP000715": 16.16, "RP000716": 20.4, "RP000136": 10.16, "RP000016": 18.93, "RP000170": 3.2, "RP000201": 21.88}}, {"id": "KINEPOLIS LE CHÂTEAU DU CINEMA", "label": "KINEPOLIS LE CHÂTEAU DU CINEMA", "items": {"RP000513": 28.35, "RP000581": 28.35}}, {"id": "LE NOBLE AGE - LNA SANTE", "label": "LE NOBLE AGE - LNA SANTE", "items": {"RP000646": 14.5, "RP000028": 16.0, "RP000715": 18.06, "RP000716": 19.33, "RP000150": 18.06, "RP000151": 19.33, "RP000040": 14.5, "RP000042": 16.0, "RP000016": 20.5}}, {"id": "LES JASMINS", "label": "LES JASMINS", "items": {"RP000583": 12.5, "RP000588": 21.52, "RP000621": 23.94, "RP000565": 28.93, "RP100351": 42.24, "RP000518": 42.24, "RP000520": 42.24, "RP100342": 31.67, "RP000509": 30.67, "RP000510": 34.4, "RP100336": 35.4, "RP000673": 38.0, "RP100337": 39.0, "RP000715": 18.1, "RP000716": 20.05, "RP000063": 9.8, "RP000150": 18.1, "RP000151": 20.05, "RP1000097": 7.7, "RP000040": 16.4, "RP000042": 18.08}}, {"id": "LES SENIORIALES", "label": "LES SENIORIALES", "items": {"RP000588": 19.83, "RP000565": 26.92, "RP100342": 29.05, "RP000509": 28.05, "RP000513": 34.37, "RP000581": 34.37, "RP100336": 32.61, "RP000510": 31.61, "RP000016": 20.88}}, {"id": "LP PROMOTION", "label": "LP PROMOTION", "items": {"RP000583": 10.9, "RP000588": 18.9, "RP000621": 21.3, "RP000576": 22.3, "RP000565": 25.0, "RP100351": 42.1, "RP000518": 42.1, "RP000646": 14.2, "RP000028": 15.7, "RP100342": 29.0, "RP000509": 28.0, "RP000510": 30.4, "RP100336": 31.4, "RP000673": 33.8, "RP100337": 34.8, "RP000715": 17.1, "RP000716": 18.3, "RP100313": 10.1, "RP000063": 8.1, "RP000150": 17.1, "RP000151": 18.3, "RP1000097": 6.7, "RP000500": 11.9, "RP000501": 12.9, "RP000040": 14.2, "RP000042": 15.7}}, {"id": "LTDN MASTER", "label": "LTDN MASTER", "items": {"RP000801": 38.93, "RP000513": 39.29, "RP000581": 39.29}}, {"id": "MAISONS DE FAMILLE", "label": "MAISONS DE FAMILLE", "items": {"RP000715": 17.36, "RP000716": 19.76, "RP000150": 17.36, "RP000151": 19.76}}, {"id": "OKKO HOTELS", "label": "OKKO HOTELS", "items": {"184718": 6.39, "219303": 23.65, "219369": 23.65}}, {"id": "PROACHAT", "label": "PROACHAT", "items": {"RP000583": 12.46, "RP000588": 21.15, "RP000621": 23.27, "RP000576": 24.38, "RP000565": 28.45, "RP000063": 10.07}}]}, "commerce_immo": {"label": "CPV Grands comptes Commerce & Immo", "clients": [{"id": "520223868.0", "label": "520223868.0", "items": {"RP000315": 16.81}}, {"id": "2177.0", "label": "2177.0", "items": {"RP000639": 14.71, "RP000588": 19.33, "RP000565": 18.5, "RP000671": 22.5, "RP000518": 41.52, "RP000128": 43.59, "RP100351": 47.74, "RP100356": 47.74, "RP000520": 49.82}}, {"id": "10084060.0", "label": "10084060.0", "items": {"RP000565": 26.92, "RP000621": 22.65, "RP100353": 52.77, "RP000171": 5.95}}, {"id": "524042717.0", "label": "524042717.0", "items": {"RP000581": 32.0}}, {"id": "10084070.0", "label": "10084070.0", "items": {"RP000518": 43.7, "RP000513": 36.42, "RP000581": 37.46, "RP000171": 5.75}}, {"id": "180901847.0", "label": "180901847.0", "items": {"RP000639": 9.0, "RP000576": 12.9, "RP000128": 28.99, "RP000072": 3.82, "RP000171": 5.54}}, {"id": "181870079.0", "label": "181870079.0", "items": {"RP000565": 26.92, "RP000581": 38.05, "RP000171": 6.78}}, {"id": "10087236.0", "label": "10087236.0", "items": {"RP100354": 105.54, "RP000716": 20.5}}, {"id": "10042979.0", "label": "10042979.0", "items": {"RP000621": 21.95, "RP000565": 26.92, "RP000006": 19.51, "RP000151": 18.75, "GB460021": 315.08, "GB460015": 286.44}}, {"id": "10085596.0", "label": "10085596.0", "items": {"RP000565": 34.35, "RP000518": 43.7, "RP100351": 50.26, "RP000028": 24.06, "RP000509": 33.16, "RP000513": 38.88, "RP000510": 35.28}}]}};
+
+
+function getFamCat(f){
+  if(CAT_PVC[f])  return "pvc";
+  if(CAT_MARM[f]) return "marm";
+  if(CAT_TEXT[f]) return "text";
+  return null;
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+var openId = null, activeSurcharge = null, activeCPV = null, strategicOnly = false;
+
+// ===== PRODUITS STRATÉGIQUES (surlignage vert, onglet "Produits") =====
+var STRATEGIC_REFS = {"RP000583":1,"RP000588":1,"RP000621":1,"RP000576":1,"RP000565":1,"RP000671":1,"RP000500":1,"RP000501":1,"RP000040":1,"RP000042":1,"RP000646":1,"RP000028":1,"RP000143":1,"RP000048":1,"RP000136":1,"RP000016":1,"RP000150":1,"RP000151":1,"RP000715":1,"RP000716":1,"RP100019":1,"RP100020":1,"RP000509":1,"RP100342":1,"RP000510":1,"RP100336":1,"RP000673":1,"RP100337":1,"RP000513":1,"RP000581":1,"RP000802":1,"RP100379":1,"RP000801":1,"RP100378":1,"RP100155":1,"RP000156":1,"RP000157":1,"RP100305":1};
+
+var famMap = {};
+DATA.forEach(function(p){ famMap[p.famille] = (famMap[p.famille]||0)+1; });
+var familles = Object.keys(famMap).sort();
+
+document.getElementById("total-badge").textContent = DATA.length + " produits";
+
+document.getElementById("search").oninput = function(){
+  var v = this.value.trim().toLowerCase();
+  document.querySelectorAll(".qg-btn").forEach(function(b){
+    b.classList.toggle("on", b.getAttribute("data-g").toLowerCase() === v);
+  });
+  render();
+};
+
+function buildCPVSelects(){
+  Object.keys(CPV_DATA).forEach(function(sheetKey){
+    var sheet = CPV_DATA[sheetKey];
+    var el = document.getElementById("cpv-"+sheetKey);
+    if(!el) return;
+    var sel = document.createElement("select");
+    sel.className = "cpv-select";
+    sel.id = "cpv-select-"+sheetKey;
+    var placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = sheet.label + " (" + sheet.clients.length + (sheet.clients.length>1?" clients)":" client)");
+    sel.appendChild(placeholder);
+    sheet.clients.slice().sort(function(a,b){ return a.label.localeCompare(b.label); }).forEach(function(c){
+      var opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = c.label + " (" + Object.keys(c.items).length + " réf.)";
+      sel.appendChild(opt);
+    });
+    sel.onchange = function(){ onCPVChange(sheetKey, sel.value); };
+    el.appendChild(sel);
+  });
+}
+
+function onCPVChange(sheetKey, clientId){
+  document.querySelectorAll(".cpv-select").forEach(function(s){
+    if(s.id !== "cpv-select-"+sheetKey) s.value = "";
+    s.classList.remove("on");
+  });
+  if(!clientId){
+    activeCPV = null;
+    document.getElementById("cpv-reset").classList.remove("visible");
+    document.getElementById("cpv-label").style.display = "none";
+    render();
+    return;
+  }
+  var sheet = CPV_DATA[sheetKey];
+  var client = sheet.clients.filter(function(c){ return c.id === clientId; })[0];
+  if(!client) return;
+  // Une sélection CPV et une surcharge standard ne se combinent pas
+  activeSurcharge = null;
+  document.querySelectorAll(".sbtn").forEach(function(b){ b.classList.remove("on"); });
+  document.getElementById("btn-reset").classList.remove("visible");
+  document.getElementById("surcharge-label").style.display = "none";
+
+  activeCPV = {sheet: sheetKey, sheetLabel: sheet.label, clientId: clientId, clientLabel: client.label, items: client.items};
+  document.getElementById("cpv-select-"+sheetKey).classList.add("on");
+  document.getElementById("cpv-reset").classList.add("visible");
+  document.getElementById("cpv-label").style.display = "flex";
+  document.getElementById("cpv-label-text").textContent = client.label + " — " + Object.keys(client.items).length + " prix négociés";
+  render();
+}
+
+function resetCPV(){
+  activeCPV = null;
+  document.querySelectorAll(".cpv-select").forEach(function(s){ s.value = ""; s.classList.remove("on"); });
+  document.getElementById("cpv-reset").classList.remove("visible");
+  document.getElementById("cpv-label").style.display = "none";
+  render();
+}
+buildCPVSelects();
+
+function toggleStrategic(){
+  strategicOnly = !strategicOnly;
+  document.getElementById("strat-toggle").classList.toggle("on", strategicOnly);
+  render();
+}
+
+var QUICK_GAMMES = ["Allura","Eternal","Flotex","Sarlon","Sphera","Tessera"];
+function buildQuickGammes(){
+  var el = document.getElementById("quick-gammes");
+  QUICK_GAMMES.forEach(function(name){
+    var btn = document.createElement("button");
+    btn.className = "qg-btn";
+    btn.textContent = name;
+    btn.setAttribute("data-g", name);
+    btn.onclick = function(){ toggleQuickGamme(name); };
+    el.appendChild(btn);
+  });
+}
+
+function toggleQuickGamme(name){
+  var search = document.getElementById("search");
+  var isActive = search.value.trim().toLowerCase() === name.toLowerCase();
+  document.querySelectorAll(".qg-btn").forEach(function(b){ b.classList.remove("on"); });
+  if(isActive){
+    search.value = "";
+  } else {
+    search.value = name;
+    document.querySelector(".qg-btn[data-g='"+name+"']").classList.add("on");
+  }
+  render();
+}
+buildQuickGammes();
+
+function toggleSurcharge(cat){
+  activeSurcharge = (activeSurcharge === cat) ? null : cat;
+  document.querySelectorAll(".sbtn").forEach(function(b){ b.classList.remove("on"); });
+  var resetBtn = document.getElementById("btn-reset");
+  var label = document.getElementById("surcharge-label");
+  if(activeSurcharge){
+    document.getElementById("btn-"+activeSurcharge).classList.add("on");
+    resetBtn.classList.add("visible");
+    label.style.display = "flex";
+    document.getElementById("surcharge-label-text").textContent = SURCHARGES[activeSurcharge].label + " appliquée";
+    // Une surcharge standard et un prix négocié CPV ne se combinent pas
+    activeCPV = null;
+    document.querySelectorAll(".cpv-select").forEach(function(s){ s.value = ""; s.classList.remove("on"); });
+    document.getElementById("cpv-reset").classList.remove("visible");
+    document.getElementById("cpv-label").style.display = "none";
+  } else {
+    resetBtn.classList.remove("visible");
+    label.style.display = "none";
+  }
+  render();
+}
+
+function resetSurcharge(){
+  activeSurcharge = null;
+  document.querySelectorAll(".sbtn").forEach(function(b){ b.classList.remove("on"); });
+  document.getElementById("btn-reset").classList.remove("visible");
+  document.getElementById("surcharge-label").style.display = "none";
+  render();
+}
+
+function firstVal(t){
+  var ks = Object.keys(t);
+  for(var i=0;i<ks.length;i++){ if(t[ks[i]] !== null && t[ks[i]] !== undefined) return t[ks[i]]; }
+  return null;
+}
+
+function render(){
+  var q = document.getElementById("search").value.toLowerCase().trim();
+  var results = document.getElementById("results");
+  var emptyEl = document.getElementById("empty");
+
+  if(!q && !strategicOnly && !activeCPV){
+    results.innerHTML = "";
+    emptyEl.style.display = "none";
+    document.getElementById("stat").innerHTML = "";
+    return;
+  }
+
+  var res = DATA.filter(function(p){
+    if(strategicOnly && !STRATEGIC_REFS[p.ref]) return false;
+    if(activeCPV && activeCPV.items[p.ref] === undefined) return false;
+    if(q && (p.gamme+" "+p.famille+" "+p.ref).toLowerCase().indexOf(q) === -1) return false;
+    return true;
+  }).sort(function(a,b){ return a.gamme.localeCompare(b.gamme, 'fr', {sensitivity:'base'}); });
+
+  var n = res.length;
+  document.getElementById("stat").innerHTML = "<strong>"+n+"</strong> produit"+(n!==1?"s":"")+" trouvé"+(n!==1?"s":"");
+  emptyEl.style.display = n ? "none" : "block";
+  if(!n){ results.innerHTML = ""; return; }
+
+  results.innerHTML = res.map(function(p, i){
+    var id = "c"+i;
+    var fp = firstVal(p.tarifs);
+    var pCat = getFamCat(p.famille);
+    var hasSurcharge = (activeSurcharge && pCat === activeSurcharge);
+    var rate = hasSurcharge ? SURCHARGES[activeSurcharge].rate : 0;
+    var isOpen = (openId === id);
+    var cpvPrice = (activeCPV && activeCPV.items[p.ref] !== undefined) ? activeCPV.items[p.ref] : null;
+
+    var tH = Object.keys(p.tarifs).filter(function(k){
+      return p.tarifs[k] !== null && p.tarifs[k] !== undefined;
+    }).map(function(k){
+      var base = p.tarifs[k];
+      var nv = hasSurcharge ? (base*(1+rate)) : null;
+      var isPlat = (k === "PLATINIUM");
+      return "<div class='ti"+(hasSurcharge?" surcharge-on":"")+(isPlat?" plat-tier":"")+"'>"
+        +"<div class='tk'>"+esc(k)+"</div>"
+        +(nv !== null
+          ? "<div class='tv surcharge'>"+nv.toFixed(2)+" €</div><div class='tv-base'>"+base.toFixed(2)+" €</div>"
+          : "<div class='tv"+(isPlat?" plat":"")+"'>"+base.toFixed(2)+" €</div>")
+        +"</div>";
+    }).join("");
+
+    var eH = (p.eco && p.eco > 0)
+      ? "<div class='eco'>♻️ Éco-participation : "+p.eco.toFixed(4)+" € / "+esc(p.unite)+"</div>"
+      : "";
+
+    var noteH = p.note ? "<div class='note'>ℹ️ "+esc(p.note)+"</div>" : "";
+
+    var cpvH = (cpvPrice !== null)
+      ? "<div class='cpv-badge'>🤝 Prix négocié — "+esc(activeCPV.clientLabel)+"</div>"
+      : "";
+
+    var dispPrice = fp !== null ? (hasSurcharge ? fp*(1+rate) : fp) : null;
+    var pH;
+    if(cpvPrice !== null){
+      pH = "<div class='pv cpv'>"+cpvPrice.toFixed(2)+" €</div>"
+        +"<div class='pl'>"+esc(activeCPV.clientLabel)+" / "+esc(p.unite)
+        +(fp !== null ? "<br><s style='color:#aaa'>"+fp.toFixed(2)+" €</s>" : "")
+        +"</div>";
+    } else {
+      pH = dispPrice !== null
+        ? "<div class='pv"+(hasSurcharge?" surcharge":"")+"'>"+dispPrice.toFixed(2)+" €</div>"
+          +"<div class='pl'>à partir de / "+esc(p.unite)+(hasSurcharge?"<br><s style='color:#aaa'>"+fp.toFixed(2)+" €</s>":"")+"</div>"
+        : "<div class='pl'>voir détails</div>";
+    }
+
+    var hasPlatinium = p.tarifs["PLATINIUM"] !== undefined && p.tarifs["PLATINIUM"] !== null;
+
+      var colles = getColles(p);
+      var collesH = "";
+      if(colles.length > 0){
+        collesH = "<div class='colles-section'>"
+          +"<div class='colles-title'>🧴 Colles recommandées</div>"
+          +"<div class='colle-list'>"
+          + colles.map(function(c){
+            var prixH = (c.prix!==undefined && c.prix!==null) ? "<div class='colle-price'>"+c.prix.toFixed(2).replace('.',',')+" € "+esc(c.uniteprix||"")+"</div>" : "";
+            var c4cH = "";
+            if(c.c4c){
+              c4cH = "<div class='colle-c4c'>"
+                + Object.keys(c.c4c).map(function(k){
+                    return "<span class='c4c-chip'><b>"+esc(k)+"</b> "+c.c4c[k].toFixed(2).replace('.',',')+" €</span>";
+                  }).join("")
+                + "</div>";
+            }
+            return "<div class='colle-item'>"
+              +"<div class='colle-row'>"
+              +"<div class='colle-ref'>"+esc(c.ref)+"</div>"
+              +"<div><div class='colle-name'>"+esc(c.nom)+"</div>"
+              +"<div class='colle-type'>"+esc(c.type)+"</div></div>"
+              +prixH
+              +"</div>"
+              +c4cH
+              +"</div>";
+          }).join("")
+          +"</div></div>";
+      }
+
+      return "<div class='card"+(isOpen?" open":"")+"' data-id='"+id+"'>"
+      +"<div class='ch'>"
+      +"<div class='cm'>"
+      +"<div class='cg'>"+esc(p.gamme)+"</div>"
+      +"<div class='cmeta'>"
+      +"<span class='badge bf'>"+esc(p.famille)+"</span>"
+      +"<span class='badge br'>"+esc(p.ref)+"</span>"
+      +(p.unite!=="M2" ? "<span class='badge bu'>"+esc(p.unite)+"</span>" : "")
+      +(hasPlatinium ? "<span class='badge bplat'>PLATINIUM</span>" : "")
+      +(STRATEGIC_REFS[p.ref] ? "<span class='badge bstrat'>Stratégique</span>" : "")
+      +"</div></div>"
+      +"<div class='cp'>"+pH+"</div>"
+      +"<svg class='cc' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'>"
+      +"<path stroke-linecap='round' d='M19 9l-7 7-7-7'/></svg>"
+      +"</div>"
+      +"<div class='cd'>"
+      +"<div class='tl'>Paliers tarifaires 2026</div>"
+      +"<div class='tg'>"+tH+"</div>"
+      +eH+noteH+cpvH+collesH
+      +"</div></div>";
+  }).join("");
+
+  results.querySelectorAll(".card").forEach(function(el){
+    el.onclick = function(){
+      var id = el.getAttribute("data-id");
+      if(openId === id){ openId = null; el.classList.remove("open"); }
+      else {
+        results.querySelectorAll(".card.open").forEach(function(c){ c.classList.remove("open"); });
+        openId = id; el.classList.add("open");
+      }
+    };
+  });
+}
+
+render();
+</script>
+</body>
+</html>
