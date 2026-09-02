@@ -659,7 +659,8 @@ function toggleStrategic(){
   render();
 }
 
-var QUICK_GAMMES = ["Allura","Eternal","Flotex","Marmoleum","Sarlon","Sphera","Tessera"];
+var QUICK_GAMMES = ["Allura","Eternal","Flotex","Marmoleum","Modul'up","Sarlon","Sphera","Tessera"];
+var QG_BUTTONS = {};
 function buildQuickGammes(){
   var el = document.getElementById("quick-gammes");
   QUICK_GAMMES.forEach(function(name){
@@ -668,6 +669,7 @@ function buildQuickGammes(){
     btn.textContent = name;
     btn.setAttribute("data-g", name);
     btn.onclick = function(){ toggleQuickGamme(name); };
+    QG_BUTTONS[name] = btn;
     el.appendChild(btn);
   });
   var accBtn = document.createElement("button");
@@ -688,7 +690,7 @@ function toggleQuickGamme(name){
     search.value = "";
   } else {
     search.value = name;
-    document.querySelector(".qg-btn[data-g='"+name+"']").classList.add("on");
+    if(QG_BUTTONS[name]) QG_BUTTONS[name].classList.add("on");
   }
   render();
 }
